@@ -34,6 +34,7 @@ struct Production <: AbstractProduction
     end
 end
 
+
 function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
     P = []
     for p in split(input, "\n")
