@@ -17,7 +17,9 @@ end
 
 Base.:|(a::AbstractArray, b::AbstractArray) = union(a, b)
 
-∪(a, b) = union(a, b)
+Base.:∪(a, b) = union(a, b)
+
+Base.:∩(a, b) = intersect(a, b)
 
 Base.:-(a::AbstractSet, b::AbstractSet) = setdiff(a, b)
 
