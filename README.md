@@ -4,7 +4,7 @@
 
 | Status | Coverage |
 | :----: | :----: |
-| [![Build Status](https://travis-ci.org/manuelelucchi/Liblet.jl.svg?branch=master)](https://travis-ci.org/manuelelucchi/Liblet.jl) | [![codecov.io](http://codecov.io/github/manuelelucchi/Liblet.jl/coverage.svg?branch=master)](http://codecov.io/github/manuelelucchi/Liblet.jl?branch=master) |
+| [![Build Status](https://travis-ci.com/manuelelucchi/Liblet.jl.svg?branch=master)](https://travis-ci.com/manuelelucchi/Liblet.jl) | [![codecov](https://codecov.io/gh/manuelelucchi/Liblet.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/manuelelucchi/Liblet.jl) |
 
 Liblet.jl is a port of the python library [Liblet](https://github.com/let-unimi/liblet)
 
