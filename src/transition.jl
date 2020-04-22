@@ -2,9 +2,18 @@ include("grammar.jl")
 
 import Base
 
+"""
+An automaton transition.
+
+This class represents an automaton transition; it has a `from` starting
+*state* and a `to` destination *state* and a `label`
+"""
 struct Transition
+    "The starting state(s) of the transition"
     from::Union{AbstractString, Set}
+    "The label of the transition"
     label::AbstractString
+    "The destination starte(s) of the transition"
     to::Union{AbstractString, Set}
     function Transition(from::Union{AbstractString, Set}, label::AbstractString, to::Union{AbstractString, Set})
         check(s::String)::Bool = true
@@ -36,6 +45,10 @@ Base.hash(t::Transition) = Base.hash((t.from, t.label, t.to))
 Base.show(io::IO, e::Transition) = Base.show(io, (e.from * "-" * e.label * "->" * e.to))
 Base.iterate(x::Transition, i...) = Base.iterate((x.left, x.right), i...)
 
+"""
+    parsetransitions(t::AbstractString)::Array{Transition}
+Builds a tuple of *transitions* obtained from the given string.
+"""
 function parsetransitions(t::AbstractString)::Array{Transition}
     res = Transition[]
     for t in split(t, '\n')

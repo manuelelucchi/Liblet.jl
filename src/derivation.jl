@@ -1,14 +1,22 @@
 include("grammar.jl")
 
 struct Derivation
+    "The grammar to which the derivations refers to."
     G::Grammar
+    "The derivation steps"
     steps::Array{Tuple{Int, Int}}
+    "The sentential form of the derivations"
     sf::Array
+    "The string representation of the derivation"
     repr::AbstractString
     Derivation(G::Grammar) = new(G, [], [G.S], G.S)
     Derivation(G::Grammar, steps::Array{Tuple{Int, Int}}, sf::Array, repr::AbstractString) = new(G, steps, sf, repr)
 end
 
+"""
+    step(d::Derivation, prod::Int, pos::Int)::Derivation
+Applies the specified production(s) to the given position in the sentential form.
+"""
 function step(d::Derivation, prod::Int, pos::Int)::Derivation
     sf = d.sf
     P = astype0(d.G.P[prod])
@@ -28,6 +36,11 @@ function step(d::Derivation, prod::AbstractArray{Tuple{Int, Int}})::Derivation
     return res
 end
 
+"""
+    leftmost(d::Derivation, prod::Int)::Derivation
+Performs a *leftmost* derivation step.
+Applies the specified production(s) to the current leftmost nonterminal in the sentential form.
+"""
 function leftmost(d::Derivation, prod::Int)::Derivation
     if !d.G.iscontextfree
         throw(ArgumentError("Cannot perform a leftmost derivation on a non context-free grammar"))
@@ -54,6 +67,11 @@ function leftmost(d::Derivation, prod::AbstractArray{Int})::Derivation
     return res
 end
 
+"""
+    rightmost(d::Derivation, prod::Int)::Derivation
+Performs a *rightmost* derivation step.
+Applies the specified production(s) to the current rightmost nonterminal in the sentential form.
+"""
 function rightmost(d::Derivation, prod::Int)::Derivation
     if !d.G.iscontextfree
         throw(ArgumentError("Cannot perform a leftmost derivation on a non context-free grammar"))
@@ -80,6 +98,15 @@ function rightmost(d::Derivation, prod::AbstractArray{Int})::Derivation
     return res
 end
 
+"""
+    possiblesteps(d::Derivation; prod::Union{Int, Nothing} = nothing, pos::Union{Int, Nothing} = nothing)
+Returns all the possible steps that can be performed given the grammar and current *sentential form*.
+
+Determines all the position of the *sentential form* that correspond to the left-hand side of
+one of the production in the grammar, returning the position and production number. If a
+production is specified, it yields only the pairs referring to it; similarly, if a position
+is specified, it yields only the pairs referring to it.
+"""
 function possiblesteps(d::Derivation; prod::Union{Int, Nothing} = nothing, pos::Union{Int, Nothing} = nothing)
     res = []
     type0prods = map(x -> astype0(x), d.G.P)

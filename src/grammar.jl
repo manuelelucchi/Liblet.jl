@@ -2,10 +2,15 @@ import Base
 
 include("production.jl")
 
+"A grammar."
 struct Grammar
+    "The nonterminal symbols Set"
     N::Set
+    "The terminal symbols Set"
     T::Set
+    "The productions Array"
     P::Array
+    "The starting symbol"
     S::AbstractString
     iscontextfree::Bool
     function Grammar(N, T, P, S) 
@@ -31,6 +36,10 @@ struct Grammar
     Grammar(productions::AbstractString, iscontextfree = true) = parsegrammar(productions, iscontextfree)
 end
 
+"""
+    parsegrammar(prods::AbstractString, iscontextfree = true)::Grammar
+Builds a grammar obtained from the given string of productions.
+"""
 function parsegrammar(prods::AbstractString, iscontextfree = true)::Grammar
     P = parseproduction(prods, iscontextfree)
     S = nothing
@@ -55,8 +64,16 @@ function parsegrammar(prods::AbstractString, iscontextfree = true)::Grammar
     return G
 end
 
-alternatives(g::Grammar, N::Array) = [P.right for P in g.P if P.left == N]
+"""
+    alternatives(g::Grammar, N::Array)::Array
+Returns all the right-hand sides alternatives matching the given nonterminal.
+"""
+alternatives(g::Grammar, N::Array)::Array = [P.right for P in g.P if P.left == N]
 
+"""
+    restrict(g::Grammar, symbols::Set)
+Returns a grammar using only the given symbols.
+"""
 restrict(g::Grammar, symbols::Set) = throw(ErrorException("Method not implemented")) #Grammar(intersect(g.N, symbols), intersect(g.T, symbols), [P for P in g.P if union(Set([P.left]), Set)], g.S)
 
 Base.:(==)(x::Grammar, y::Grammar) = (x.N, x.T, sort(x.P), x.S) == (y.N, y.T, sort(x.S), y.S)

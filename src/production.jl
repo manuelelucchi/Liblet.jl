@@ -3,10 +3,18 @@ import Base
 include("utils.jl")
 include("constants.jl")
 
+
+"Base type for productions"
 abstract type AbstractProduction end
 
+"""
+    Production
+A grammar production.
+"""
 struct Production <: AbstractProduction
+    "The left-hand side of the production"
     left::Union{AbstractString, AbstractArray}
+    "The right-hand side of the production"
     right::Union{AbstractString, AbstractArray}
     function Production(left, right)
         l = nothing
@@ -34,7 +42,10 @@ struct Production <: AbstractProduction
     end
 end
 
-
+"""
+    parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
+Returns an Array of Productions obtained from the given string.
+"""
 function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
     P = []
     for p in split(input, "\n")
@@ -53,6 +64,11 @@ function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Arr
     return P
 end
 
+"""
+    suchthat(p::AbstractProduction; left::AbstractString = nothing, right::AbstractString = nothing, rightlen::Int = nothing, right_is_suffix_of::AbstractString = nothing)::Array
+A predicate (that is a one-argument function that retuns `true` or `false`) that is `true` weather the production
+given as argument satisfies all the predicates given by the named arguments.
+"""
 function suchthat(p::AbstractProduction; left::AbstractString = nothing, right::AbstractString = nothing, rightlen::Int = nothing, right_is_suffix_of::AbstractString = nothing)
     c = []
     if left != nothing
@@ -70,7 +86,11 @@ function suchthat(p::AbstractProduction; left::AbstractString = nothing, right::
     return p::AbstractProduction -> all(cond(p) for cond in c)
 end
 
-astype0(p::Production) = ifelse(typeof(p.left) <: AbstractArray, p, Production([p.left], p.right))
+"""
+    astype0(p::Production)::Production
+Returns a new `Production` that is type 0
+"""
+astype0(p::Production)::Production = ifelse(typeof(p.left) <: AbstractArray, p, Production([p.left], p.right))
 
 Base.:(==)(x::Production, y::Production) = (x.left, x.right) == (y.left, y.right)
 
