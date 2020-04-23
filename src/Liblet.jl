@@ -2,7 +2,7 @@ module Liblet
 
 export Automaton, δ
 
-export Grammar, parsegrammar, alternatives, restrict
+export Grammar, alternatives, restrict
 
 export Production, parseproduction, suchthat, astype0
 
