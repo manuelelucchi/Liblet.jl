@@ -3,7 +3,6 @@ import Base
 include("utils.jl")
 include("constants.jl")
 
-
 "Base type for productions"
 abstract type AbstractProduction end
 
@@ -16,31 +15,36 @@ struct Production <: AbstractProduction
     left::Union{AbstractString, AbstractArray}
     "The right-hand side of the production"
     right::Union{AbstractString, AbstractArray}
-    function Production(left, right)
-        l = nothing
-        r = nothing
-        if typeof(left) <: AbstractString && left != nothing 
-            l = left
-        elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, left))
-            l = collect(left) 
-        else
-            throw(ArgumentError("Errore"))
-        end
-
-        if typeof(right) <: AbstractString && right != nothing 
-            r = right
-        elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, right))
-            r = collect(right)
-        else
-            throw(ArgumentError("Errore"))
-        end
-
-        if ϵ in r && length(r) != 1
-            throw(ArgumentError("The right-hand side contains ε but has more than one symbol"))
-        end
-        new(l, r)
-    end
 end
+
+### Constructors ###
+
+function Production(left, right)
+    l = nothing
+    r = nothing
+    if typeof(left) <: AbstractString && left != nothing 
+        l = left
+    elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, left))
+        l = collect(left) 
+    else
+        throw(ArgumentError("Errore"))
+    end
+
+    if typeof(right) <: AbstractString && right != nothing 
+        r = right
+    elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, right))
+        r = collect(right)
+    else
+        throw(ArgumentError("Errore"))
+    end
+
+    if ϵ in r && length(r) != 1
+        throw(ArgumentError("The right-hand side contains ε but has more than one symbol"))
+    end
+    Production(l, r)
+end
+
+### Functions ###
 
 """
     parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
@@ -91,6 +95,8 @@ end
 Returns a new `Production` that is type 0
 """
 astype0(p::Production)::Production = ifelse(typeof(p.left) <: AbstractArray, p, Production([p.left], p.right))
+
+### Operators ###
 
 Base.:(==)(x::Production, y::Production) = (x.left, x.right) == (y.left, y.right)
 

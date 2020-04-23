@@ -1,17 +1,27 @@
+import Base
+
 include("grammar.jl")
 
 struct Derivation
     "The grammar to which the derivations refers to."
     G::Grammar
     "The derivation steps"
-    steps::Array{Tuple{Int, Int}}
+    steps::Array#{Tuple{Int, Int}}
     "The sentential form of the derivations"
     sf::Array
     "The string representation of the derivation"
     repr::AbstractString
-    Derivation(G::Grammar) = new(G, [], [G.S], G.S)
-    Derivation(G::Grammar, steps::Array{Tuple{Int, Int}}, sf::Array, repr::AbstractString) = new(G, steps, sf, repr)
 end
+
+### Constuctors ###
+
+"""
+    Derivation(G::Grammar)::Derivation 
+Builds a Derivation from a given Grammar.
+"""
+Derivation(G::Grammar)::Derivation = Derivation(G, [], [G.S], G.S)
+
+### Operators ###
 
 """
     step(d::Derivation, prod::Int, pos::Int)::Derivation
@@ -119,3 +129,13 @@ function possiblesteps(d::Derivation; prod::Union{Int, Nothing} = nothing, pos::
     end
     return res
 end
+
+"""
+    sententialform(d::Derivation)
+Returns the sentential form of the Derivation.
+"""
+sententialform(d::Derivation) = d.sf
+
+### Operators ###
+
+Base.show(io::IO, d::Derivation) = Base.show(io, d.repr)

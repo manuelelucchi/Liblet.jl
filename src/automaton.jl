@@ -19,28 +19,14 @@ struct Automaton
     transitions::Array
     "The starting state of the automation"
     q0::AbstractString
-    function Automaton(N::Iterable, T::Iterable, F::Iterable, transitions::Iterable, q0::AbstractString)
-        N = isa(N, Set) ? N : Set(N)
-        T = isa(T, Set) ? T : Set(T)
-        F = isa(F, Set) ? F : Set(F)
-        transitions = collect(transitions)
-        return new(N, T, F, transitions, q0)
-    end
-    Automaton(F::Set, transitions::Array, q0::NullableAbstractString) = automaton(F, transitions, q0)
-    Automaton(G::Grammar) = automaton(G)
 end
 
-Base.show(io::IO, a::Automaton) = Base.show(io, @sprintf "Automaton(N=%s, T=%s, transitions=%s, F=%s, q0=%s)" a.N a.T a.F a.transitions a.q0) #TODO
+### Constructors ###
 
 """
-    δ(a::Automaton, X, x)
-The transition function.
-
-This function returns the set of states reachable from the given state and input symbol.
+Builds an automaton obtained from the given components.
 """
-δ(a::Automaton, X, x) = Set([Z for (Y, y, Z) in a.transitions if X == Y && y==x])
-
-function automaton(N::Iterable, T::Iterable, F::Iterable, transitions::Iterable, q0::AbstractString)
+function Automaton(N::Iterable, T::Iterable, F::Iterable, transitions::Iterable, q0::AbstractString)
     N = isa(N, Set) ? N : Set(N)
     T = isa(T, Set) ? T : Set(T)
     F = isa(F, Set) ? F : Set(F)
@@ -51,7 +37,7 @@ end
 """
 Builds an automaton obtained from the given transitions.
 """
-function automaton(F::Set, transitions::Array, q0::NullableAbstractString = nothing)::Automaton
+function Automaton(F::Set, transitions::Array, q0::NullableAbstractString = nothing)::Automaton
     transitions = parsetransitions(transitions)
     if q0 === nothing
         q0 = transitions[1].from
@@ -65,7 +51,7 @@ end
 """
 Builds the automaton corresponding to the given *regular grammar*.
 """
-function automaton(G::Grammar)::Automaton 
+function Automaton(G::Grammar)::Automaton 
     transitions = []
     diamond = ""
 
@@ -80,3 +66,17 @@ function automaton(G::Grammar)::Automaton
 
     return Automaton(G.N ∪ Set([diamond]), G.T, transitions, Set([diamond]), G.S)
 end
+
+### Functions ###
+
+"""
+    δ(a::Automaton, X, x)
+The transition function.
+
+This function returns the set of states reachable from the given state and input symbol.
+"""
+δ(a::Automaton, X, x) = Set([Z for (Y, y, Z) in a.transitions if X == Y && y==x])
+
+### Operators ###
+
+Base.show(io::IO, a::Automaton) = Base.show(io, @sprintf "Automaton(N=%s, T=%s, transitions=%s, F=%s, q0=%s)" a.N a.T a.F a.transitions a.q0) #TODO

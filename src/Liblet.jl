@@ -1,6 +1,6 @@
 module Liblet
 
-export Automaton, automaton, δ
+export Automaton, δ
 
 export Grammar, parsegrammar, alternatives, restrict
 

@@ -13,34 +13,36 @@ struct Grammar
     "The starting symbol"
     S::AbstractString
     iscontextfree::Bool
-    function Grammar(N, T, P, S) 
-        cf = all(map(x -> length(x.left) == 1, P))
-        if intersect(N, T) != Set()
-            throw(ArgumentError("The set of terminals and nonterminals are not disjoint"))
-        end
-        if !in(S, N)
-            throw(ArgumentError("The start symbol is not a nonterminal."))
-        end
-        if cf
-            badprods = [p for p in P if !in(p.left, N)]
-            if !isempty(badprods)
-                throw(ArgumentError("Error: Bad Productions"))
-            end
-        end
-        badprods = [] #Todo
+end
+
+### Constructors ###
+
+function Grammar(N, T, P, S) 
+    cf = all(map(x -> length(x.left) == 1, P))
+    if intersect(N, T) != Set()
+        throw(ArgumentError("The set of terminals and nonterminals are not disjoint"))
+    end
+    if !in(S, N)
+        throw(ArgumentError("The start symbol is not a nonterminal."))
+    end
+    if cf
+        badprods = [p for p in P if !in(p.left, N)]
         if !isempty(badprods)
             throw(ArgumentError("Error: Bad Productions"))
         end
-        new(N, T, P, S, cf)
     end
-    Grammar(productions::AbstractString, iscontextfree = true) = parsegrammar(productions, iscontextfree)
+    badprods = [] #Todo
+    if !isempty(badprods)
+        throw(ArgumentError("Error: Bad Productions"))
+    end
+    Grammar(N, T, P, S, cf)
 end
 
 """
-    parsegrammar(prods::AbstractString, iscontextfree = true)::Grammar
+    Grammar(prods::AbstractString, iscontextfree = true)::Grammar
 Builds a grammar obtained from the given string of productions.
 """
-function parsegrammar(prods::AbstractString, iscontextfree = true)::Grammar
+function Grammar(prods::AbstractString, iscontextfree = true)::Grammar
     P = parseproduction(prods, iscontextfree)
     S = nothing
     N = nothing
@@ -64,6 +66,8 @@ function parsegrammar(prods::AbstractString, iscontextfree = true)::Grammar
     return G
 end
 
+### Functions ###
+
 """
     alternatives(g::Grammar, N::Array)::Array
 Returns all the right-hand sides alternatives matching the given nonterminal.
@@ -75,6 +79,8 @@ alternatives(g::Grammar, N::Array)::Array = [P.right for P in g.P if P.left == N
 Returns a grammar using only the given symbols.
 """
 restrict(g::Grammar, symbols::Set) = throw(ErrorException("Method not implemented")) #Grammar(intersect(g.N, symbols), intersect(g.T, symbols), [P for P in g.P if union(Set([P.left]), Set)], g.S)
+
+### Operators ###
 
 Base.:(==)(x::Grammar, y::Grammar) = (x.N, x.T, sort(x.P), x.S) == (y.N, y.T, sort(x.S), y.S)
 
