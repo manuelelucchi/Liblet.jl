@@ -31,7 +31,7 @@ function Grammar(N, T, P, S)
             throw(ArgumentError("Error: Bad Productions"))
         end
     end
-    badprods = [] #Todo
+    badprods = [p for p in P if !(Set(astype0(p).left) ⊂ (N ∪ T ∪ Set([ϵ])))] 
     if !isempty(badprods)
         throw(ArgumentError("Error: Bad Productions"))
     end
@@ -50,12 +50,12 @@ function Grammar(prods::AbstractString, iscontextfree = true)::Grammar
     if iscontextfree
         S = P[1].left
         N = Set(map(x -> x.left, P))
-        T = setdiff(Set(vcat(map(x -> x.right, P)...)), N) # Da sottrarre ϵ
+        T = Set(vcat(map(x -> x.right, P)...)) - N - ϵ
     else
         S = P[1].left[1]
         symbols = union(Set(vcat(map(x -> x.left, P))), Set(vcat(map(x -> x.right, P))))
         N = Set(filter(x -> isuppercase(x[1]), symbols))
-        T = setdiff(symbols, N) # da sottrarre ϵ
+        T = symbols - N - ϵ
     end
     G = Grammar(N, T, P, S)
     if iscontextfree
@@ -78,7 +78,7 @@ alternatives(g::Grammar, N::Array)::Array = [P.right for P in g.P if P.left == N
     restrict(g::Grammar, symbols::Set)
 Returns a grammar using only the given symbols.
 """
-restrict(g::Grammar, symbols::Set) = throw(ErrorException("Method not implemented")) #Grammar(intersect(g.N, symbols), intersect(g.T, symbols), [P for P in g.P if union(Set([P.left]), Set)], g.S)
+restrict(g::Grammar, symbols::Set) = Grammar(g.N ∩ symbols, g.T ∩ symbols, [P for P in g.P if (Set([P.left]) ∪ Set(P.right)) <= symbols], g.S)
 
 ### Operators ###
 
