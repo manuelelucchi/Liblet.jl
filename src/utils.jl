@@ -24,3 +24,5 @@ Base.:∩(a, b) = intersect(a, b)
 Base.:-(a::AbstractSet, b::AbstractSet) = setdiff(a, b)
 
 Base.:-(a::AbstractSet, b) = setdiff(a, Set([b]))
+
+Base.:⊂(a, b) = issubset(a, b)

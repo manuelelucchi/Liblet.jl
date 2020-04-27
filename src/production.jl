@@ -73,7 +73,7 @@ end
 A predicate (that is a one-argument function that retuns `true` or `false`) that is `true` weather the production
 given as argument satisfies all the predicates given by the named arguments.
 """
-function suchthat(p::AbstractProduction; left::AbstractString = nothing, right::AbstractString = nothing, rightlen::Int = nothing, right_is_suffix_of::AbstractString = nothing)
+function suchthat(p::AbstractProduction; left::AbstractString = nothing, right::AbstractString = nothing, rightlen::Int = nothing, right_is_suffix_of::Iterable = nothing)
     c = []
     if left != nothing
         push!(c, p::AbstractProduction -> p.left == left)
@@ -85,7 +85,8 @@ function suchthat(p::AbstractProduction; left::AbstractString = nothing, right::
         push!(c, p::AbstractProduction -> length(p.right) == rightlen)
     end
     if right_is_suffix_of != nothing 
-        #push!(c, p::AbstractProduction -> ) todo
+        c = collect(right_is_suffix_of)
+        push!(c, p::AbstractProduction -> c[(end - length(c)):end] == collect(p.right))
     end
     return p::AbstractProduction -> all(cond(p) for cond in c)
 end
