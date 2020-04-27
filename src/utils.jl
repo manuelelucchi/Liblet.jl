@@ -15,14 +15,6 @@ Base.show(io::IO, arr::AbstractArray) = begin
     Base.show(io, res)
 end
 
-Base.:|(a::AbstractArray, b::AbstractArray) = union(a, b)
-
-Base.:∪(a, b) = union(a, b)
-
-Base.:∩(a, b) = intersect(a, b)
-
 Base.:-(a::AbstractSet, b::AbstractSet) = setdiff(a, b)
 
 Base.:-(a::AbstractSet, b) = setdiff(a, Set([b]))
-
-Base.:⊂(a, b) = issubset(a, b)

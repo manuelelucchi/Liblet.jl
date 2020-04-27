@@ -31,7 +31,7 @@ function Grammar(N, T, P, S)
             throw(ArgumentError("Error: Bad Productions"))
         end
     end
-    badprods = [p for p in P if !(Set(astype0(p).left) ⊂ (N ∪ T ∪ Set([ϵ])))] 
+    badprods = [p for p in P if !(Set(astype0(p).left) ⊆ (N ∪ T ∪ Set([ϵ])))] 
     if !isempty(badprods)
         throw(ArgumentError("Error: Bad Productions"))
     end

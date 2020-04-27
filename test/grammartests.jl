@@ -11,7 +11,7 @@ test_production_nonemptystr_rhs() = Production("a"["a","","c"])
 
 test_production_nonempty_rhs() = Production("a",[])
 
-test_production_such_that_lhs() = suchthat(left = "X")(Production('X', ['x']))
+test_production_such_that_lhs() = suchthat(left = "X")(Production("X", ["x"]))
 
 function test_grammar_restrict_to()
     G = Grammar("""
@@ -26,7 +26,9 @@ function test_grammar_restrict_to()
         T -> i | ( E )
     """)
     symbols = G.T ∪ G.N - Set(["X", "x"])
-    restrict(G, symbols) == Gr
+    Gt = restrict(G, symbols)
+    print((Gt, Gr))
+    Gt == Gr
 end
 
 

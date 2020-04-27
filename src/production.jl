@@ -15,33 +15,30 @@ struct Production <: AbstractProduction
     left::Union{AbstractString, AbstractArray}
     "The right-hand side of the production"
     right::Union{AbstractString, AbstractArray}
-end
-
-### Constructors ###
-
-function Production(left, right)
-    l = nothing
-    r = nothing
-    if typeof(left) <: AbstractString && left != nothing 
-        l = left
-    elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, left))
-        l = collect(left) 
-    else
-        throw(ArgumentError("Errore"))
+    function Production(left, right)
+        l = nothing
+        r = nothing
+        if typeof(left) <: AbstractString && left != nothing 
+            l = left
+        elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, left))
+            l = collect(left) 
+        else
+            throw(ArgumentError("Errore"))
+        end
+    
+        if typeof(right) <: AbstractString && right != nothing 
+            r = right
+        elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, right))
+            r = collect(right)
+        else
+            throw(ArgumentError("Errore"))
+        end
+    
+        if ϵ in r && length(r) != 1
+            throw(ArgumentError("The right-hand side contains ε but has more than one symbol"))
+        end
+        new(l, r)
     end
-
-    if typeof(right) <: AbstractString && right != nothing 
-        r = right
-    elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, right))
-        r = collect(right)
-    else
-        throw(ArgumentError("Errore"))
-    end
-
-    if ϵ in r && length(r) != 1
-        throw(ArgumentError("The right-hand side contains ε but has more than one symbol"))
-    end
-    Production(l, r)
 end
 
 ### Functions ###
@@ -52,7 +49,7 @@ Returns an Array of Productions obtained from the given string.
 """
 function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
     P = []
-    for p in split(input, "\n")
+    for p in filter(f::AbstractString -> f != "",split(input, "\n"))
         l, r = split(p, "->")
         left = split(l)
         if iscontextfree
@@ -69,11 +66,11 @@ function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Arr
 end
 
 """
-    suchthat(p::AbstractProduction; left::AbstractString = nothing, right::AbstractString = nothing, rightlen::Int = nothing, right_is_suffix_of::AbstractString = nothing)::Array
+    suchthat(;left::AbstractString = nothing, right::AbstractString = nothing, rightlen::Int = nothing, right_is_suffix_of::AbstractString = nothing)::Array
 A predicate (that is a one-argument function that retuns `true` or `false`) that is `true` weather the production
 given as argument satisfies all the predicates given by the named arguments.
 """
-function suchthat(p::AbstractProduction; left::AbstractString = nothing, right::AbstractString = nothing, rightlen::Int = nothing, right_is_suffix_of::Iterable = nothing)
+function suchthat(;left::Union{AbstractString,Nothing} = nothing, right::Union{AbstractString,Nothing} = nothing, rightlen::Union{Int,Nothing} = nothing, right_is_suffix_of::Union{Iterable,Nothing} = nothing)
     c = []
     if left != nothing
         push!(c, p::AbstractProduction -> p.left == left)

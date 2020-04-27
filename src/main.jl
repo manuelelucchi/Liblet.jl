@@ -1,8 +1,11 @@
 include("derivation.jl")
 
-g = Grammar("S -> aBc
-             S -> B
-             B -> b")
+g = Grammar("""
+        Z -> E
+        E -> T | E + T | X
+        X -> x
+        T -> i | ( E )
+    """)
 
 d = Derivation(g)
 #=d = step(d, 1, 1)
