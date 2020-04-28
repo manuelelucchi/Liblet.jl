@@ -9,7 +9,7 @@ test_production_nonempty_lhs() = Production("",[""])
 
 test_production_wrong_rhs() = Production("a",[1])
 
-test_production_nonemptystr_rhs() = Production("a"["a","","c"])
+test_production_nonemptystr_rhs() = Production("a",["a","","c"])
 
 test_production_nonempty_rhs() = Production("a",[])
 
@@ -54,7 +54,7 @@ test_production_such_that_rhs_is_suffix_of() = suchthat(right_is_suffix_of = ["a
     @test_throws ArgumentError test_production_wrong_rhs()
     @test_throws ArgumentError test_production_nonemptystr_rhs()
     @test_throws ArgumentError test_production_nonempty_rhs()
-    @test_throws ArgumentError test_production_inset()
+    @test test_production_inset()
     @test_throws ArgumentError test_production_aε()
 
     @test test_production_unpack()

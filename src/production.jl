@@ -1,7 +1,6 @@
 import Base
 
 include("utils.jl")
-include("constants.jl")
 
 "Base type for productions"
 abstract type AbstractProduction end
@@ -18,23 +17,23 @@ struct Production <: AbstractProduction
     function Production(left, right)
         l = nothing
         r = nothing
-        if typeof(left) <: AbstractString && left != nothing 
+        if typeof(left) <: AbstractString && left != nothing && !isempty(left)
             l = left
-        elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, left))
+        elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && !isempty(left) && all(map(x-> typeof(x) <: AbstractString && x != nothing && !isempty(x), left))
             l = collect(left) 
         else
             throw(ArgumentError("Errore"))
         end
     
-        if typeof(right) <: AbstractString && right != nothing 
+        if typeof(right) <: AbstractString && right != nothing && !isempty(left)
             r = right
-        elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && all(map(x-> typeof(x) <: AbstractString && x != nothing, right))
+        elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && !isempty(right) && all(map(x-> typeof(x) <: AbstractString && x != nothing && !isempty(x), right))
             r = collect(right)
         else
             throw(ArgumentError("Errore"))
         end
     
-        if ϵ in r && length(r) != 1
+        if "ε" in r && length(r) != 1
             throw(ArgumentError("The right-hand side contains ε but has more than one symbol"))
         end
         new(l, r)
@@ -76,14 +75,14 @@ function suchthat(;left::Union{AbstractString,Nothing} = nothing, right::Union{A
         push!(c, p::AbstractProduction -> p.left == left)
     end
     if right != nothing 
-        push!(c, p::AbstractProduction -> p.right == right)
+        push!(c, p::AbstractProduction -> p.right == [right])
     end
     if rightlen != nothing
         push!(c, p::AbstractProduction -> length(p.right) == rightlen)
     end
     if right_is_suffix_of != nothing 
         d = collect(right_is_suffix_of)
-        push!(c, p::AbstractProduction -> d[(end - length(p.right)):end] == collect(p.right))
+        push!(c, p::AbstractProduction -> d[(end - (length(p.right) -1)):end] == collect(p.right))
     end
     return p::AbstractProduction -> all(cond(p) for cond in c)
 end
