@@ -31,7 +31,7 @@ function Grammar(N, T, P, S)
             throw(ArgumentError("Error: Bad Productions"))
         end
     end
-    badprods = [p for p in P if !(Set(astype0(p).left) ⊆ (N ∪ T ∪ Set([ϵ])))] 
+    badprods = [p for p in P if !(Set(astype0(p).left) ⊆ (N ∪ T ∪ Set(["ε"])))] 
     if !isempty(badprods)
         throw(ArgumentError("Error: Bad Productions"))
     end
@@ -50,12 +50,12 @@ function Grammar(prods::AbstractString, iscontextfree = true)::Grammar
     if iscontextfree
         S = P[1].left
         N = Set(map(x -> x.left, P))
-        T = Set(vcat(map(x -> x.right, P)...)) - N - ϵ
+        T = Set(vcat(map(x -> x.right, P)...)) - N - "ε"
     else
         S = P[1].left[1]
         symbols = union(Set(vcat(map(x -> x.left, P))), Set(vcat(map(x -> x.right, P))))
-        N = Set(filter(x -> isuppercase(x[1]), symbols))
-        T = symbols - N - ϵ
+        N = Set(filter(x -> isuppercase(x[1][1]), symbols))
+        T = symbols - N - "ε"
     end
     G = Grammar(N, T, P, S)
     if iscontextfree
