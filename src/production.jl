@@ -82,8 +82,8 @@ function suchthat(;left::Union{AbstractString,Nothing} = nothing, right::Union{A
         push!(c, p::AbstractProduction -> length(p.right) == rightlen)
     end
     if right_is_suffix_of != nothing 
-        c = collect(right_is_suffix_of)
-        push!(c, p::AbstractProduction -> c[(end - length(c)):end] == collect(p.right))
+        d = collect(right_is_suffix_of)
+        push!(c, p::AbstractProduction -> d[(end - length(p.right)):end] == collect(p.right))
     end
     return p::AbstractProduction -> all(cond(p) for cond in c)
 end
