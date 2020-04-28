@@ -105,3 +105,5 @@ Base.hash(x::Production) = Base.hash((x.left, x.right))
 Base.show(io::IO, x::Production) = Base.show(io, (x.left, x.right))
 
 Base.iterate(x::Production, i...) = Base.iterate((x.left, x.right), i...)
+
+Base.isless(x::Production, y::Production) = Base.isless((x.left, x.right), (y.left, y.right))

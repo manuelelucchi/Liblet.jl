@@ -82,7 +82,7 @@ restrict(g::Grammar, symbols::Set) = Grammar(g.N ∩ symbols, g.T ∩ symbols, [
 
 ### Operators ###
 
-Base.:(==)(x::Grammar, y::Grammar) = (x.N, x.T, sort(x.P), x.S) == (y.N, y.T, sort(x.S), y.S)
+Base.:(==)(x::Grammar, y::Grammar) = (x.N, x.T, sort(x.P), x.S) == (y.N, y.T, sort(x.P), y.S)
 
 Base.hash(g::Grammar) = Base.hash((g.N, g.T, sort(g.P), g.S))
 
