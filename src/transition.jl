@@ -21,7 +21,7 @@ end
 
 function Transition(from::Union{AbstractString, Set}, label::AbstractString, to::Union{AbstractString, Set})
     check(s::String)::Bool = true
-    check(s::Union{AbstractSet, AbstractArray, Tuple}) = all(map(x -> isa(x, AbstractString), s))
+    check(s::Union{AbstractSet, AbstractArray, Tuple}) = all(x -> isa(x, AbstractString), s)
 
     f = nothing
     l = nothing
@@ -50,7 +50,7 @@ Builds a tuple of *transitions* obtained from the given string.
 """
 function parsetransitions(t::AbstractString)::Array{Transition}
     res = Transition[]
-    for t in split(t, '\n')
+    for t ∈ split(t, '\n')
         if !strip(t)
             continue
         end

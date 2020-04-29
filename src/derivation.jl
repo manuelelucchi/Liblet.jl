@@ -31,7 +31,7 @@ function step(d::Derivation, prod::Int, pos::Int)::Derivation
     sf = d.sf
     P = astype0(d.G.P[prod])
     #if sf = check da fare
-    sf = [c for c in [sf[begin:pos]; P.right; sf[pos + length(P.left):end]] if c != ϵ]
+    sf = [c for c ∈ [sf[begin:pos]; P.right; sf[pos + length(P.left):end]] if c ≠ "ε"]
     steps = [d.steps; [(prod, pos)]]
     repr = d.repr * " -> " * string(sf)
     clone = Derivation(d.G, steps, sf, repr)
@@ -40,7 +40,7 @@ end
 
 function step(d::Derivation, prod::AbstractArray{Tuple{Int, Int}})::Derivation
     res = d
-    for (nprod, pos) in prod
+    for (nprod, pos) ∈ prod
         res = step(res, nprod, nothing)
     end
     return res
@@ -52,14 +52,14 @@ Performs a *leftmost* derivation step.
 Applies the specified production(s) to the current leftmost nonterminal in the sentential form.
 """
 function leftmost(d::Derivation, prod::Int)::Derivation
-    if !d.G.iscontextfree
+    if ~d.G.iscontextfree
         throw(ArgumentError("Cannot perform a leftmost derivation on a non context-free grammar"))
     end
     if length(d.sf) == 0
         throw(ArgumentError("Cannot apply: there are non terminals"))
     end
-    for (pos, symbol) in enumerate(d.sf)
-        if symbol in d.G.N
+    for (pos, symbol) ∈ enumerate(d.sf)
+        if symbol ∈ d.G.N
             if d.G.P[prod].left == symbol
                 return step(d, prod, pos)
             else 
@@ -71,7 +71,7 @@ end
 
 function leftmost(d::Derivation, prod::AbstractArray{Int})::Derivation
     res = d
-    for i in prod 
+    for i ∈ prod 
         res = leftmost(d, i)
     end
     return res
@@ -83,14 +83,14 @@ Performs a *rightmost* derivation step.
 Applies the specified production(s) to the current rightmost nonterminal in the sentential form.
 """
 function rightmost(d::Derivation, prod::Int)::Derivation
-    if !d.G.iscontextfree
+    if ~d.G.iscontextfree
         throw(ArgumentError("Cannot perform a leftmost derivation on a non context-free grammar"))
     end
     if length(d.sf) == 0
         throw(ArgumentError("Cannot apply: there are non terminals"))
     end
-    for (pos, symbol) in enumerate(reverse(d.sf))
-        if symbol in d.G.N
+    for (pos, symbol) ∈ enumerate(reverse(d.sf))
+        if symbol ∈ d.G.N
             if d.G.P[prod].left == symbol
                 return step(d, prod, pos)
             else 
@@ -102,7 +102,7 @@ end
 
 function rightmost(d::Derivation, prod::AbstractArray{Int})::Derivation
     res = d
-    for i in prod 
+    for i ∈ prod 
         res = rightmost(d, i)
     end
     return res
@@ -120,9 +120,9 @@ is specified, it yields only the pairs referring to it.
 function possiblesteps(d::Derivation; prod::Union{Int, Nothing} = nothing, pos::Union{Int, Nothing} = nothing)
     res = []
     type0prods = map(x -> astype0(x), d.G.P)
-    for (n, P) in (prod === nothing ? enumerate(type0prods) : [(prod, type0prods[prod])])
-        for p in (pos === nothing ? range(1, length=(length(d.sf) - length(P.left) + 1)) : [pos])
-            if [d.sf[p:p + length(P.left) - 1]] == P.left || P.left in [d.sf[p:p + length(P.left) - 1]]
+    for (n, P) ∈ (prod === nothing ? enumerate(type0prods) : [(prod, type0prods[prod])])
+        for p ∈ (pos === nothing ? range(1, length=(length(d.sf) - length(P.left) + 1)) : [pos])
+            if [d.sf[p:p + length(P.left) - 1]] == P.left || P.left ∈ [d.sf[p:p + length(P.left) - 1]]
                 push!(res, (n, p))
             end
         end

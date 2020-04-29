@@ -44,7 +44,7 @@ function Automaton(F::Set, transitions::Array, q0::NullableAbstractString = noth
     end
 
     N = Set(map(x::Transition -> x.from, transitions) ∪ map(x::Transition -> x.to, transitions))
-    T = Set(map(x::Transition -> x.label, transitions)) - ϵ
+    T = Set(map(x::Transition -> x.label, transitions)) - "ε"
     return Automaton(N, T, F, transitions, q0)
 end
 
@@ -55,11 +55,11 @@ function Automaton(G::Grammar)::Automaton
     transitions = []
     diamond = ""
 
-    for P in G.P
+    for P ∈ G.P
         if length(P.right) > 2
         end
         if length(P.right) == 2
-        elseif P.right[1] in G.N
+        elseif P.right[1] ∈ G.N
         else 
         end
     end
@@ -75,7 +75,7 @@ The transition function.
 
 This function returns the set of states reachable from the given state and input symbol.
 """
-δ(a::Automaton, X, x) = Set([Z for (Y, y, Z) in a.transitions if X == Y && y==x])
+δ(a::Automaton, X, x) = Set([Z for (Y, y, Z) ∈ a.transitions if X == Y && y==x])
 
 ### Operators ###
 
