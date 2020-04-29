@@ -22,7 +22,8 @@ struct Production <: AbstractProduction
         elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && ~isempty(left) && all(x-> typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), left)
             l = collect(left) 
         else
-            throw(ArgumentError("Errore"))
+            print(left)
+            throw(ArgumentError("Error in lhs"))
         end
     
         if typeof(right) <: AbstractString && right ≠ nothing && ~isempty(left)
@@ -30,7 +31,7 @@ struct Production <: AbstractProduction
         elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && ~isempty(right) && all(x-> typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), right)
             r = collect(right)
         else
-            throw(ArgumentError("Errore"))
+            throw(ArgumentError("Error in rhs"))
         end
     
         if "ε" ∈ r && length(r) ≠ 1

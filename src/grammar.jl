@@ -53,8 +53,8 @@ function Grammar(prods::AbstractString, iscontextfree = true)::Grammar
         T = Set(vcat(map(x -> x.right, P)...)) - N - "ε"
     else
         S = P[1].left[1]
-        symbols = union(Set(vcat(map(x -> x.left, P))), Set(vcat(map(x -> x.right, P))))
-        N = Set(filter(x -> isuppercase(x[1][1]), symbols))
+        symbols = union(Set(vcat(map(x -> x.left, P)...)), Set(vcat(map(x -> x.right, P)...)))
+        N = Set(filter(x -> isuppercase(x[1]), symbols))
         T = symbols - N - "ε"
     end
     G = Grammar(N, T, P, S)
@@ -72,7 +72,7 @@ end
     alternatives(g::Grammar, N::Array)::Array
 Returns all the right-hand sides alternatives matching the given nonterminal.
 """
-alternatives(g::Grammar, N::Array)::Array = [P.right for P ∈ g.P if P.left == N]
+alternatives(g::Grammar, N::Union{AbstractString, Iterable})::Array = [P.right for P ∈ g.P if P.left == (isa(N,Iterable) ? collect(N) : N)]
 
 """
     restrict(g::Grammar, symbols::Set)
