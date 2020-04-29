@@ -24,10 +24,10 @@ Derivation(G::Grammar)::Derivation = Derivation(G, [], [G.S], G.S)
 ### Operators ###
 
 """
-    step(d::Derivation, prod::Int, pos::Int)::Derivation
+    next(d::Derivation, prod::Int, pos::Int)::Derivation
 Applies the specified production(s) to the given position in the sentential form.
 """
-function step(d::Derivation, prod::Int, pos::Int)::Derivation
+function next(d::Derivation, prod::Int, pos::Int)::Derivation
     sf = d.sf
     P = astype0(d.G.P[prod])
     #if sf = check da fare
@@ -38,10 +38,10 @@ function step(d::Derivation, prod::Int, pos::Int)::Derivation
     return clone
 end
 
-function step(d::Derivation, prod::AbstractArray{Tuple{Int, Int}})::Derivation
+function next(d::Derivation, prod::AbstractArray{Tuple{Int, Int}})::Derivation
     res = d
     for (nprod, pos) ∈ prod
-        res = step(res, nprod, nothing)
+        res = next(res, nprod, nothing)
     end
     return res
 end
@@ -61,7 +61,7 @@ function leftmost(d::Derivation, prod::Int)::Derivation
     for (pos, symbol) ∈ enumerate(d.sf)
         if symbol ∈ d.G.N
             if d.G.P[prod].left == symbol
-                return step(d, prod, pos)
+                return next(d, prod, pos)
             else 
                 throw(ArgumentError(" Cannot apply: the leftmost nonterminal of"))
             end
@@ -92,7 +92,7 @@ function rightmost(d::Derivation, prod::Int)::Derivation
     for (pos, symbol) ∈ enumerate(reverse(d.sf))
         if symbol ∈ d.G.N
             if d.G.P[prod].left == symbol
-                return step(d, prod, pos)
+                return next(d, prod, pos)
             else 
                 throw(ArgumentError(" Cannot apply: the leftmost nonterminal of"))
             end
