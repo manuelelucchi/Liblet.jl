@@ -18,21 +18,21 @@ end
 ### Constructors ###
 
 function Grammar(N, T, P, S) 
-    cf = all(map(x -> length(x.left) == 1, P))
-    if intersect(N, T) != Set()
+    cf = all(x -> length(x.left) == 1, P)
+    if (N ∩ T) ≠ Set()
         throw(ArgumentError("The set of terminals and nonterminals are not disjoint"))
     end
-    if !in(S, N)
+    if S ∉ N
         throw(ArgumentError("The start symbol is not a nonterminal."))
     end
     if cf
-        badprods = [p for p in P if !in(p.left, N)]
+        badprods = [p for p ∈ P if p.left ∉ N]
         if !isempty(badprods)
             throw(ArgumentError("Error: Bad Productions"))
         end
     end
-    badprods = [p for p in P if !(Set(astype0(p).left) ⊆ (N ∪ T ∪ Set([ϵ])))] 
-    if !isempty(badprods)
+    badprods = [p for p ∈ P if Set(astype0(p).left) ⊈ (N ∪ T ∪ Set(["ε"]))] 
+    if ~isempty(badprods)
         throw(ArgumentError("Error: Bad Productions"))
     end
     Grammar(N, T, P, S, cf)
@@ -50,16 +50,16 @@ function Grammar(prods::AbstractString, iscontextfree = true)::Grammar
     if iscontextfree
         S = P[1].left
         N = Set(map(x -> x.left, P))
-        T = Set(vcat(map(x -> x.right, P)...)) - N - ϵ
+        T = Set(vcat(map(x -> x.right, P)...)) - N - "ε"
     else
         S = P[1].left[1]
         symbols = union(Set(vcat(map(x -> x.left, P))), Set(vcat(map(x -> x.right, P))))
         N = Set(filter(x -> isuppercase(x[1]), symbols))
-        T = symbols - N - ϵ
+        T = symbols - N - "ε"
     end
     G = Grammar(N, T, P, S)
     if iscontextfree
-        if !G.iscontextfree 
+        if ~G.iscontextfree 
             throw(ArgumentError("The resulting grammar is not context-free, even if so requested."))
         end
     end
@@ -72,17 +72,17 @@ end
     alternatives(g::Grammar, N::Array)::Array
 Returns all the right-hand sides alternatives matching the given nonterminal.
 """
-alternatives(g::Grammar, N::Array)::Array = [P.right for P in g.P if P.left == N]
+alternatives(g::Grammar, N::Array)::Array = [P.right for P ∈ g.P if P.left == N]
 
 """
     restrict(g::Grammar, symbols::Set)
 Returns a grammar using only the given symbols.
 """
-restrict(g::Grammar, symbols::Set) = Grammar(g.N ∩ symbols, g.T ∩ symbols, [P for P in g.P if (Set([P.left]) ∪ Set(P.right)) <= symbols], g.S)
+restrict(g::Grammar, symbols::Set) = Grammar(g.N ∩ symbols, g.T ∩ symbols, [P for P ∈ g.P if (Set([P.left]) ∪ Set(P.right)) ≤ symbols], g.S)
 
 ### Operators ###
 
-Base.:(==)(x::Grammar, y::Grammar) = (x.N, x.T, sort(x.P), x.S) == (y.N, y.T, sort(x.P), y.S)
+Base.:(==)(x::Grammar, y::Grammar) = (x.N, x.T, sort(x.P), x.S) == (y.N, y.T, sort(y.P), y.S)
 
 Base.hash(g::Grammar) = Base.hash((g.N, g.T, sort(g.P), g.S))
 
