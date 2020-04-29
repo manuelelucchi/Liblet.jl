@@ -53,10 +53,13 @@ function Grammar(prods::AbstractString, iscontextfree = true)::Grammar
         T = Set(vcat(map(x -> x.right, P)...)) - N - "ε"
     else
         S = P[1].left[1]
-        symbols = union(Set(vcat(map(x -> x.left, P)...)), Set(vcat(map(x -> x.right, P)...)))
+        symbols = Set(vcat(map(x -> x.left, P)...)) ∪ Set(vcat(map(x -> x.right, P)...))
         N = Set(filter(x -> isuppercase(x[1]), symbols))
         T = symbols - N - "ε"
     end
+    #println(N)
+    #println(T)
+    #println(P)
     G = Grammar(N, T, P, S)
     if iscontextfree
         if ~G.iscontextfree 

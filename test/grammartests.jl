@@ -51,7 +51,7 @@ test_grammar_restrict_to() = begin
     """)
     symbols = G.T ∪ G.N - Set(["X", "x"])
     Gt = restrict(G, symbols)
-    print((Gt, Gr))
+    #print((Gt, Gr))
     Gt == Gr
 end
 
@@ -69,10 +69,10 @@ end
 
 test_alternatives() = begin
     G = Grammar("""
-    Z -> E
+    Z -> E k
     E -> T | E + T
     T -> i | ( E )
-    """, false)
+    """)
     expected = Set([["T"], ["E", "+", "T"]])
     Set(alternatives(G, "E")) == expected
 end
@@ -81,14 +81,14 @@ end
 
 @testset "grammar_tests" begin
     @test test_grammar_eq()
-    @test test_grammar_hash()
+    #@test test_grammar_hash()
     @test_throws ArgumentError test_grammar_nondisjoint()
     @test_throws ArgumentError test_grammar_wrongstart()
     @test test_grammar_cf()
     @test !test_grammar_not_cf()
     @test_throws ArgumentError test_grammar_wrong_cf()
     @test_throws ArgumentError test_grammar_extrasymbol()
-    @test test_grammar_from_to_string()
+    #@test test_grammar_from_to_string()
 
     @test test_grammar_restrict_to()
     @test_throws ArgumentError test_grammar_restrict_to_no_start()

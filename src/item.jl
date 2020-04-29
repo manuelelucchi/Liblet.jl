@@ -7,6 +7,6 @@ struct Item <: AbstractProduction
     Item(left::Union{Tuple{String},Array{String},String}, right::Union{Tuple{String},Array{String},String}, pos = 0) = new(left, right, pos)
 end
 
-afterdotsymbol(item::Item)::Char = ifelse(item.pos < length(item.right), item.right[item.pos], nothing)
+afterdotsymbol(item::Item)::Char = item.pos < length(item.right) ? item.right[item.pos] : nothing
 
-advance(item::Item, x::String)::Item = ifelse(item.pos < length(item.right), Item(item.left, item.right, item.pos+1), nothing)
+advance(item::Item, x::String)::Item = item.pos < length(item.right) ?  Item(item.left, item.right, item.pos+1) : nothing

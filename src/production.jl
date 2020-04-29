@@ -22,7 +22,6 @@ struct Production <: AbstractProduction
         elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && ~isempty(left) && all(x-> typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), left)
             l = collect(left) 
         else
-            print(left)
             throw(ArgumentError("Error in lhs"))
         end
     
@@ -54,7 +53,7 @@ function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Arr
         left = split(l)
         if iscontextfree
             if length(left) ≠ 1
-                throw(ArgumentError("Errore")) # To improve
+                throw(ArgumentError("Production marked as context free while it's not")) # To improve
             end
             left = left[1]
         end
@@ -92,7 +91,7 @@ end
     astype0(p::Production)::Production
 Returns a new `Production` that is type 0
 """
-astype0(p::Production)::Production = ifelse(typeof(p.left) <: AbstractArray, p, Production([p.left], p.right))
+astype0(p::Production)::Production = typeof(p.left) <: AbstractArray ? p : Production([p.left], p.right)
 
 ### Operators ###
 
