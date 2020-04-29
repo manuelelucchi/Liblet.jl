@@ -17,23 +17,23 @@ struct Production <: AbstractProduction
     function Production(left, right)
         l = nothing
         r = nothing
-        if typeof(left) <: AbstractString && left != nothing && !isempty(left)
+        if typeof(left) <: AbstractString && left ≠ nothing && ~isempty(left)
             l = left
-        elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && !isempty(left) && all(map(x-> typeof(x) <: AbstractString && x != nothing && !isempty(x), left))
+        elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && ~isempty(left) && all(x-> typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), left)
             l = collect(left) 
         else
             throw(ArgumentError("Errore"))
         end
     
-        if typeof(right) <: AbstractString && right != nothing && !isempty(left)
+        if typeof(right) <: AbstractString && right ≠ nothing && ~isempty(left)
             r = right
-        elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && !isempty(right) && all(map(x-> typeof(x) <: AbstractString && x != nothing && !isempty(x), right))
+        elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && ~isempty(right) && all(x-> typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), right)
             r = collect(right)
         else
             throw(ArgumentError("Errore"))
         end
     
-        if "ε" in r && length(r) != 1
+        if "ε" ∈ r && length(r) ≠ 1
             throw(ArgumentError("The right-hand side contains ε but has more than one symbol"))
         end
         new(l, r)
@@ -48,16 +48,16 @@ Returns an Array of Productions obtained from the given string.
 """
 function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
     P = []
-    for p in filter(f::AbstractString -> f != "",split(input, "\n"))
+    for p ∈ filter(f::AbstractString -> f ≠ "",split(input, "\n"))
         l, r = split(p, "->")
         left = split(l)
         if iscontextfree
-            if length(left) != 1
+            if length(left) ≠ 1
                 throw(ArgumentError("Errore")) # To improve
             end
             left = left[1]
         end
-        for right in split(r, "|")
+        for right ∈ split(r, "|")
             push!(P, Production(left, split(right)))
         end
     end
@@ -71,20 +71,20 @@ given as argument satisfies all the predicates given by the named arguments.
 """
 function suchthat(;left::Union{AbstractString,Nothing} = nothing, right::Union{AbstractString,Nothing} = nothing, rightlen::Union{Int,Nothing} = nothing, right_is_suffix_of::Union{Iterable,Nothing} = nothing)
     c = []
-    if left != nothing
+    if left ≠ nothing
         push!(c, p::AbstractProduction -> p.left == left)
     end
-    if right != nothing 
+    if right ≠ nothing 
         push!(c, p::AbstractProduction -> p.right == [right])
     end
-    if rightlen != nothing
+    if rightlen ≠ nothing
         push!(c, p::AbstractProduction -> length(p.right) == rightlen)
     end
-    if right_is_suffix_of != nothing 
+    if right_is_suffix_of ≠ nothing 
         d = collect(right_is_suffix_of)
         push!(c, p::AbstractProduction -> d[(end - (length(p.right) -1)):end] == collect(p.right))
     end
-    return p::AbstractProduction -> all(cond(p) for cond in c)
+    return p::AbstractProduction -> all(cond(p) for cond ∈ c)
 end
 
 """
