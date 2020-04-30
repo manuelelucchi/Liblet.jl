@@ -6,7 +6,7 @@ export Grammar, alternatives, restrict
 
 export Production, parseproduction, suchthat, astype0
 
-export Derivation, next, leftmost, rightmost, possiblesteps
+export Derivation, next, leftmost, rightmost, possiblesteps, sententialform
 
 include("automaton.jl")
 include("grammar.jl")

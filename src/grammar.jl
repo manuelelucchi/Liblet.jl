@@ -18,7 +18,7 @@ end
 ### Constructors ###
 
 function Grammar(N, T, P, S) 
-    cf = all(x -> length(x.left) == 1, P)
+    cf = all(x -> isa(x.left, AbstractString), P)
     if (N ∩ T) ≠ Set()
         throw(ArgumentError("The set of terminals and nonterminals are not disjoint"))
     end

@@ -30,7 +30,9 @@ Applies the specified production(s) to the given position in the sentential form
 function next(d::Derivation, prod::Int, pos::Int)::Derivation
     sf = d.sf
     P = astype0(d.G.P[prod])
-    #if sf = check da fare
+    if sf[pos:pos+length(P.left)-1] != P.left
+        throw(ArgumentError("Cannot apply"))
+    end
     sf = [c for c ∈ [sf[begin:pos]; P.right; sf[pos + length(P.left):end]] if c ≠ "ε"]
     steps = [d.steps; [(prod, pos)]]
     repr = d.repr * " -> " * string(sf)
@@ -72,7 +74,7 @@ end
 function leftmost(d::Derivation, prod::AbstractArray{Int})::Derivation
     res = d
     for i ∈ prod 
-        res = leftmost(d, i)
+        res = leftmost(res, i)
     end
     return res
 end
@@ -103,7 +105,7 @@ end
 function rightmost(d::Derivation, prod::AbstractArray{Int})::Derivation
     res = d
     for i ∈ prod 
-        res = rightmost(d, i)
+        res = rightmost(res, i)
     end
     return res
 end

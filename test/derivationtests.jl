@@ -8,7 +8,7 @@ test_derivation_repr() = begin
         B -> b
     """, false)
     d = Derivation(G)
-    for (p, pros) ∈ [(0, 0), (1, 0), (2, 1)]
+    for (p, pros) ∈ [(1, 1), (2, 1), (3, 2)]
         d = next(d, p, pros)
     end
     string(d) == "S -> A B -> a B -> a b"
@@ -21,11 +21,11 @@ test_derivation_eq() = begin
             B -> b
         """, false)
     d0 = Derivation(G)
-    for (prod, pos) ∈ [(0, 0), (1, 0), (2, 1)]
+    for (prod, pos) ∈ [(1, 1), (2, 1), (3, 2)]
         d0 = next(d0, prod, pos)
     end
     d1 = Derivation(G)
-    for (prod, pos) ∈ [(0, 0), (1, 0), (2, 1)]
+    for (prod, pos) ∈ [(1, 1), (2, 1), (3, 2)]
         d1 = next(d1, prod, pos)
     end
     d0 == d1
@@ -38,11 +38,11 @@ test_derivation_hash() = begin
             B -> b
         """, false)
     d0 = Derivation(G)
-    for (prod, pos) ∈ [(0, 0), (1, 0), (2, 1)]
+    for (prod, pos) ∈ [(1, 1), (2, 1), (3, 2)]
         d0 = next(d0, prod, pos)
     end
     d1 = Derivation(G)
-    for (prod, pos) ∈ [(0, 0), (1, 0), (2, 1)]
+    for (prod, pos) ∈ [(1, 1), (2, 1), (3, 2)]
         d1 = next(d1, prod, pos)
     end
     S = Dict( d0 => 0, d1 => 1)
@@ -55,12 +55,12 @@ test_derivation_steps() = begin
             A -> a
             B -> b
         """, false)
-        d = Derivation(G)
-        steps = [(0, 0), (1, 0), (2, 1)]
-        for (prod, pos) ∈ steps
-            d = next(d, prod, pos)
-        end
-        steps == d.steps
+    d = Derivation(G)
+    steps = [(1, 1), (2, 1), (3, 2)]
+    for (prod, pos) ∈ steps
+        d = next(d, prod, pos)
+    end
+    steps == d.steps
 end
 
 test_derivation_byprods() = begin
@@ -70,8 +70,9 @@ test_derivation_byprods() = begin
             B -> b
         """)
     d = Derivation(G)
-    p = Production("S", ["A", "B"]), Production("A", ["a"])
-    (leftmost ∘ sententialform)(p) == ["a", "B"]
+    #p = Production("S", ["A", "B"]), Production("A", ["a"]) # Da vedere
+    #(leftmost(p) |> sententialform)== ["a", "B"]
+    # to support derivation with productions
 end
 
 test_derivation_byprod() = begin
@@ -82,7 +83,7 @@ test_derivation_byprod() = begin
     """)
     d = Derivation(G)
     p = Production("S", ["A", "B"])    
-    (leftmost ∘ sententialform)(p) == ["A", "B"]
+    (sententialform ∘ leftmost)(p) == ["A", "B"]
 end
 
 test_derivation_steps_list() = begin
@@ -91,8 +92,8 @@ test_derivation_steps_list() = begin
         A -> a
         B -> b
     """, false)
-    s = [(0, 0), (1, 0), (2, 1)]
-    d = next(Derivation(G),s)
+    s = [(1, 1), (2, 1), (3, 2)]
+    d = Derivation(G) |> x -> next(x,s)
     s == steps(d)
 end
 
@@ -103,7 +104,7 @@ test_derivation_wrong_step() = begin
         B -> b
     """, false)
     d = Derivation(G)
-    steps = ((0, 0), (1, 1))
+    steps = [(1, 1), (2, 2)]
     for (prod, pos) ∈ steps
         d = next(d, prod, pos)
     end
@@ -115,9 +116,11 @@ test_derivation_leftmost() = begin
         A -> a
         B -> b
     """)
-    d = Derivation(G) 
-    #d = leftmost(d,[0, 1, 2]) todo
-    s = [(0, 0), (1, 0), (2, 1)]
+    d = Derivation(G) |>
+        (x -> leftmost(x, 1)) |>
+        (x -> leftmost(x, 2)) |>
+        (x -> leftmost(x, 3))
+    s = [(1, 1), (2, 1), (3, 2)]
     s == steps(d)
 end
 
@@ -127,12 +130,12 @@ test_derivation_leftmost_list() = begin
         A -> a
         B -> b
     """)
-    d = leftmost(Derivation(G),[0, 1, 2])
-    s = [(0, 0), (1, 0), (2, 1)]
+    d = leftmost(Derivation(G),[1, 2, 3])
+    s = [(1, 1), (2, 1), (3, 2)]
     s == steps(d)
 end
 
-test_derivation_leftmost_ncf() = leftmost(Derivation(Grammar("S -> s\nT U ->s", false)), 0)
+test_derivation_leftmost_ncf() = Grammar("S -> s\nT U ->s", false) |> Derivation |> (x -> leftmost(x, 1))
 
 test_derivation_leftmost_allterminals() = begin
     G = Grammar("""
@@ -140,7 +143,14 @@ test_derivation_leftmost_allterminals() = begin
     M -> E * E
     A -> E + E
     """)
-    #d = Derivation(G).leftmost(1).leftmost(4).leftmost(0).leftmost(3).leftmost(2).leftmost(2).leftmost(2)
+    d = Derivation(G) |>
+        (x -> leftmost(x, 2)) |>
+        (x -> leftmost(x, 5)) |>
+        (x -> leftmost(x, 1)) |>
+        (x -> leftmost(x, 4)) |>
+        (x -> leftmost(x, 3)) |>
+        (x -> leftmost(x, 3)) |>
+        (x -> leftmost(x, 3))
 end
 
 test_derivation_leftmost_wrongsymbol() = begin
@@ -149,7 +159,12 @@ test_derivation_leftmost_wrongsymbol() = begin
     M -> E * E
     A -> E + E
     """)
-    #d = Derivation(G).leftmost(1).leftmost(4).leftmost(0).leftmost(3).leftmost(2)
+    d = Derivation(G) |>
+        (x -> leftmost(x, 2)) |>
+        (x -> leftmost(x, 5)) |>
+        (x -> leftmost(x, 1)) |>
+        (x -> leftmost(x, 4)) |>
+        (x -> leftmost(x, 3))
     leftmost(d, 3)
 end
 
@@ -159,7 +174,12 @@ test_derivation_rightmost() = begin
         A -> a
         B -> b
     """)
-    d = Derivation(G).rightmost(0).rightmost(2).rightmost(1)
+    d = Derivation(G) |>
+        (x -> rightmost(x, 2)) |>
+        (x -> rightmost(x, 5)) |>
+        (x -> rightmost(x, 1)) |>
+        (x -> rightmost(x, 4)) |>
+        (x -> rightmost(x, 3))
     s = [(0, 0), (2, 1), (1, 0)]
     s == steps(d)
 end
@@ -170,12 +190,12 @@ test_derivation_rightmost_list() = begin
         A -> a
         B -> b
     """)
-    d = rightmost(Derivation(G),[0, 2, 1])
+    d = Derivation(G) |> x -> rightmost(x,[1, 3, 2])
     s = [(0, 0), (2, 1), (1, 0)]
     s == steps(d)
 end
 
-test_derivation_rightmost_ncf() = rightmost(Derivation(Grammar("S -> s\nT U ->s", false)), 0)
+test_derivation_rightmost_ncf() = Grammar("S -> s\nT U ->s", false) |> Derivation |> x -> rightmost(x, 1)
 
 test_derivation_rightmost_allterminals() = begin
     G = Grammar("""
@@ -183,7 +203,11 @@ test_derivation_rightmost_allterminals() = begin
     M -> E * E
     A -> E + E
     """)
-    #d = Derivation(G).rightmost(1).rightmost(4).rightmost(0).rightmost(3).rightmost(2).rightmost(2).rightmost(2)
+    d = Derivation(G) |>
+        (x -> rightmost(x, 1)) |>
+        (x -> rightmost(x, 4)) |>
+        (x -> rightmost(x, 3)) |>
+        (x -> rightmost(x, 3))
 end
 
 test_derivation_rightmost_wrongsymbol() = begin
@@ -192,7 +216,9 @@ test_derivation_rightmost_wrongsymbol() = begin
     M -> E * E
     A -> E + E
     """)
-    #d = Derivation(G).rightmost(1).rightmost(4).rightmost(0).rightmost(3).rightmost(2)
+    d = Derivation(G) |>
+        (x -> rightmost(x, 1)) |>
+        (x -> rightmost(x, 4)) |>
     rightmost(d, 3)
 end
 
@@ -203,7 +229,7 @@ test_derivation_possible_steps() = begin
         B -> b
     """, false)
     expected = [(1, 0), (2, 1)]
-    actual = collect(possiblesteps(next(Derivation(G),[0,0])))
+    actual = Derivation(G) |> (x -> next(x, 1, 1)) |> possiblesteps |> collect
     actual == expected
 end
 
@@ -214,7 +240,7 @@ test_derivation_possible_steps_prod() = begin
         B -> b
     """, false)
     expected = [(1, 0)]
-    actual = collect(possiblesteps(next(Derivation(G),[0,0]), 1))
+    actual = Derivation(G) |> (x -> next(x, 1, 1)) |> (x-> possiblesteps(x, prod = 2)) |> collect
     expected == actual
 end
 
@@ -224,8 +250,8 @@ test_derivation_possible_steps_pos() = begin
         A -> a
         B -> b
     """, false)
-    expected = [(2, 1)]
-    actual = collect(possiblesteps(next(Derivation(G),[0,0]), nothing, 1))
+    expected = [(2, 2)]
+    actual = Derivation(G) |> (x -> next(x, 1, 1)) |> (x-> possiblesteps(x, pos = 2)) |> collect
     expected == actual
 end
 
@@ -241,12 +267,12 @@ end
     @test test_derivation_byprod()
     @test test_derivation_steps_list()
     @test_throws ArgumentError test_derivation_wrong_step()
-    #@test_throws ArgumentError test_derivation_leftmost() todo
+    @test_throws ArgumentError test_derivation_leftmost()
     @test test_derivation_leftmost_list()
     @test_throws ArgumentError test_derivation_leftmost_ncf()
-    #@test_throws ArgumentError test_derivation_leftmost_allterminals() todo
-    #@test_throws ArgumentError test_derivation_leftmost_wrongsymbol() todo
-    #@test test_derivation_rightmost() todo
+    @test_throws ArgumentError test_derivation_leftmost_allterminals()
+    @test_throws ArgumentError test_derivation_leftmost_wrongsymbol()
+    @test test_derivation_rightmost()
     @test test_derivation_rightmost_list()
     @test_throws ArgumentError test_derivation_rightmost_ncf()
     @test_throws ArgumentError test_derivation_rightmost_allterminals()
