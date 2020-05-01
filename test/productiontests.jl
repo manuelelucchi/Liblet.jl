@@ -48,22 +48,24 @@ test_production_such_that_rhs_is_suffix_of() = suchthat(right_is_suffix_of = ["a
 
 # Tests
 
-@testset "production_tests" begin
-    @test_throws ArgumentError test_production_wrong_lhs()
-    @test_throws ArgumentError test_production_nonempty_lhs()
-    @test_throws ArgumentError test_production_wrong_rhs()
-    @test_throws ArgumentError test_production_nonemptystr_rhs()
-    @test_throws ArgumentError test_production_nonempty_rhs()
-    @test test_production_inset()
-    @test_throws ArgumentError test_production_aε()
-
-    @test test_production_unpack()
-    @test test_production_totalorder()
-
-    @test test_production_astype0()
-
-    @test test_production_such_that_lhs()
-    @test test_production_such_that_rhs()
-    @test test_production_such_that_rhs_len()
-    @test test_production_such_that_rhs_is_suffix_of()
+function runproductiontests()    
+    @testset "production_tests" begin
+        @test_throws ArgumentError test_production_wrong_lhs()
+        @test_throws ArgumentError test_production_nonempty_lhs()
+        @test_throws ArgumentError test_production_wrong_rhs()
+        @test_throws ArgumentError test_production_nonemptystr_rhs()
+        @test_throws ArgumentError test_production_nonempty_rhs()
+        @test test_production_inset()
+        @test_throws ArgumentError test_production_aε()
+    
+        @test test_production_unpack()
+        @test test_production_totalorder()
+    
+        @test test_production_astype0()
+    
+        @test test_production_such_that_lhs()
+        @test test_production_such_that_rhs()
+        @test test_production_such_that_rhs_len()
+        @test test_production_such_that_rhs_is_suffix_of()
+    end
 end
