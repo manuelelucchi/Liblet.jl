@@ -79,19 +79,21 @@ end
 
 # Tests
 
-@testset "grammar_tests" begin
-    @test test_grammar_eq()
-    #@test test_grammar_hash()
-    @test_throws ArgumentError test_grammar_nondisjoint()
-    @test_throws ArgumentError test_grammar_wrongstart()
-    @test test_grammar_cf()
-    @test !test_grammar_not_cf()
-    @test_throws ArgumentError test_grammar_wrong_cf()
-    @test_throws ArgumentError test_grammar_extrasymbol()
-    #@test test_grammar_from_to_string()
-
-    @test test_grammar_restrict_to()
-    @test_throws ArgumentError test_grammar_restrict_to_no_start()
-
-    @test test_alternatives()
+function rungrammartests()    
+    @testset "grammar_tests" begin
+        @test test_grammar_eq()
+        #@test test_grammar_hash()
+        @test_throws ArgumentError test_grammar_nondisjoint()
+        @test_throws ArgumentError test_grammar_wrongstart()
+        @test test_grammar_cf()
+        @test !test_grammar_not_cf()
+        @test_throws ArgumentError test_grammar_wrong_cf()
+        @test_throws ArgumentError test_grammar_extrasymbol()
+        #@test test_grammar_from_to_string()
+    
+        @test test_grammar_restrict_to()
+        @test_throws ArgumentError test_grammar_restrict_to_no_start()
+    
+        @test test_alternatives()
+    end
 end
