@@ -27,32 +27,32 @@ test_automaton_from_ε_grammar() = begin
     A = Automaton(Grammar("""
     S -> A
     S -> a B
-        A -> a A
-        A -> ε
-        B -> b B
-        B -> b
-        """))
+    A -> a A
+    A -> ε
+    B -> b B
+    B -> b
+    """))
     s = "Automaton(N={A, B, S, ◇}, T={a, b}, transitions=(S-ε->A, S-a->B, A-a->A, A-ε->◇, B-b->B, B-b->◇), F={◇}, q0=S)"
-    s == string(a)
+    s == string(A)
 end
 
 test_automaton_from_string() = begin
     A = Automaton("""
-    A, 0, B
-    A, 1, F
-    B, 0, G
-            B, 1, C
-            C, 1, C
-            D, 0, C
-            D, 1, G
-            E, 0, H
-            E, 1, F
-            F, 0, C
-            F, 1, G
-            G, 0, G
-            H, 0, G
-            H, 1, C
-        """, Set(["C"]))
+        A, 0, B
+        A, 1, F
+        B, 0, G
+        B, 1, C
+        C, 1, C
+        D, 0, C
+        D, 1, G
+        E, 0, H
+        E, 1, F
+        F, 0, C
+        F, 1, G
+        G, 0, G
+        H, 0, G
+        H, 1, C
+    """, Set(["C"]))
     s = "Automaton(N={A, B, C, D, E, F, G, H}, T={0, 1}, transitions=(A-0->B, A-1->F, B-0->G, B-1->C, C-1->C, D-0->C, D-1->G, E-0->H, E-1->F, F-0->C, F-1->G, G-0->G, H-0->G, H-1->C), F={C}, q0=A)"
     s == string(A)
 end
@@ -94,3 +94,5 @@ function runautomatontests()
         @test_throws ArgumentError test_automaton_FN()
     end    
 end
+
+runautomatontests()

@@ -61,6 +61,3 @@ function runtransitiontests()
         @test_throws ArgumentError test_transition_wrong_to4()
     end
 end
-
-
-runtransitiontests()

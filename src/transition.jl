@@ -15,18 +15,18 @@ struct Transition
     label::AbstractString
     "The destination starte(s) of the transition"
     to::Union{AbstractString, Set}
-    function Transition(from::Union{AbstractString, Set}, label::AbstractString, to::Union{AbstractString, Set})
+    function Transition(from::Union{AbstractString, Iterable}, label::AbstractString, to::Union{AbstractString, Iterable})
         check(s::AbstractString)::Bool = ~isempty(s)
         check(s::AbstractProduction)::Bool = true
         check(s)::Bool = false
-        check(s::Set) = all(x -> check(x), s) && ~isempty(s)
+        check(s::Iterable) = all(x -> check(x), Set(collect(s))) && ~isempty(s)
     
         f = nothing
         l = nothing
         t = nothing
     
         if check(from)
-            f = from
+            f = isa(from, Iterable) ? Set(collect(from)) : from
         else
             throw(ArgumentError("The from state is not a nonempty string, or a nonempty set of nonempty strings/items"))
         end
@@ -38,7 +38,7 @@ struct Transition
         end
     
         if check(to)
-            t = to
+            t = isa(to, Iterable) ? Set(collect(to)) : to
         else
             throw(ArgumentError("The to state is not a nonempty string, or a nonempty set of nonempty strings/items"))
         end
@@ -56,7 +56,7 @@ Builds a tuple of *transitions* obtained from the given string.
 function parsetransitions(t::AbstractString)::Array{Transition}
     res = Transition[]
     for t ∈ split(t, '\n')
-        if !strip(t)
+        if isempty(strip(t))
             continue
         end
         from, label, to = split(t, ',')
