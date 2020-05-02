@@ -2,11 +2,13 @@ import Base
 
 include("grammar.jl")
 
+HAIR_SPACE = '\u200a'
+
 struct Derivation
     "The grammar to which the derivations refers to."
     G::Grammar
     "The derivation steps"
-    steps::Array#{Tuple{Int, Int}}
+    steps::Array
     "The sentential form of the derivations"
     sf::Array
     "The string representation of the derivation"
@@ -29,15 +31,19 @@ Applies the specified production(s) to the given position in the sentential form
 """
 function next(d::Derivation, prod::Int, pos::Int)::Derivation
     sf = d.sf
+    prod = ensure_production_index(d, prod)
     P = astype0(d.G.P[prod])
-    if sf[pos:pos+length(P.left)-1] != P.left
-        throw(ArgumentError("Cannot apply"))
-    end
-    sf = [c for c ∈ [sf[begin:pos]; P.right; sf[pos + length(P.left):end]] if c ≠ "ε"]
+    if sf[pos:pos+length(P.left)-1] != P.left throw(ArgumentError("Cannot apply")) end
+    sf = [c for c ∈ [sf[begin:pos-1]; P.right; sf[pos + length(P.left):end]] if c ≠ "ε"]
     steps = [d.steps; [(prod, pos)]]
-    repr = d.repr * " -> " * string(sf)
+    repr = string(d.repr," -> ", join(sf,HAIR_SPACE))
     clone = Derivation(d.G, steps, sf, repr)
     return clone
+end
+
+function next(d::Derivation, prod::Production, pos)::Derivation
+    p = ensure_production_index(d, prod)
+    return next(d, p, pos)
 end
 
 function next(d::Derivation, prod::AbstractArray{Tuple{Int, Int}})::Derivation
@@ -91,7 +97,7 @@ function rightmost(d::Derivation, prod::Int)::Derivation
     if length(d.sf) == 0
         throw(ArgumentError("Cannot apply: there are non terminals"))
     end
-    for (pos, symbol) ∈ enumerate(reverse(d.sf))
+    for (pos, symbol) ∈ (enumerate(d.sf) |> collect |> reverse)
         if symbol ∈ d.G.N
             if d.G.P[prod].left == symbol
                 return next(d, prod, pos)
@@ -138,6 +144,16 @@ Returns the sentential form of the Derivation.
 """
 sententialform(d::Derivation) = d.sf
 
+steps(d::Derivation) = d.steps
+
+ensure_production_index(d::Derivation, prod::Int) = if 1 <= prod <= length(d.G.P) return prod else throw(ArgumentError("There is no production of index {} in G")) end
+
+ensure_production_index(d::Derivation, prod::Production) = if prod ∈ d.G.P return indexin(prod,d.G.P)[1] else throw(ArgumentError("Production {} does not belong to G")) end
+
 ### Operators ###
 
 Base.show(io::IO, d::Derivation) = Base.show(io, d.repr)
+
+Base.:(==)(x::Derivation, y::Derivation) = (x.G, x.steps) == (y.G, y.steps)
+
+Base.hash(x::Derivation) = Base.hash((x.G, x.steps))
