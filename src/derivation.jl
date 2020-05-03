@@ -41,7 +41,7 @@ function next(d::Derivation, prod::Int, pos::Int)::Derivation
     return clone
 end
 
-function next(d::Derivation, prod::Production, pos)::Derivation
+function next(d::Derivation, prod::Production, pos::Int)::Derivation
     p = ensure_production_index(d, prod)
     return next(d, p, pos)
 end
@@ -49,7 +49,7 @@ end
 function next(d::Derivation, prod::AbstractArray{Tuple{Int, Int}})::Derivation
     res = d
     for (nprod, pos) ∈ prod
-        res = next(res, nprod, nothing)
+        res = next(res, nprod, pos)
     end
     return res
 end
@@ -71,10 +71,24 @@ function leftmost(d::Derivation, prod::Int)::Derivation
             if d.G.P[prod].left == symbol
                 return next(d, prod, pos)
             else 
-                throw(ArgumentError(" Cannot apply: the leftmost nonterminal of"))
+                throw(ArgumentError("Cannot apply: the leftmost nonterminal of"))
             end
         end
     end
+    throw(ArgumentError("Cannot apply: the leftmost nonterminal of"))
+end
+
+function leftmost(d::Derivation, prod::Production)::Derivation
+    p = ensure_production_index(d,prod)
+    return leftmost(d, p)
+end
+
+function leftmost(d::Derivation, prod::AbstractArray{Production})::Derivation
+    res = d
+    for i ∈ prod 
+        res = leftmost(res, i)
+    end
+    return res
 end
 
 function leftmost(d::Derivation, prod::AbstractArray{Int})::Derivation
@@ -106,9 +120,23 @@ function rightmost(d::Derivation, prod::Int)::Derivation
             end
         end
     end
+    throw(ArgumentError("Cannot apply: the rightmost nonterminal of"))
+end
+
+function rightmost(d::Derivation, prod::Production)::Derivation
+    p = ensure_production_index(d,prod)
+    return rightmost(d, p)
 end
 
 function rightmost(d::Derivation, prod::AbstractArray{Int})::Derivation
+    res = d
+    for i ∈ prod 
+        res = rightmost(res, i)
+    end
+    return res
+end
+
+function rightmost(d::Derivation, prod::AbstractArray{Production})::Derivation
     res = d
     for i ∈ prod 
         res = rightmost(res, i)
@@ -146,13 +174,13 @@ sententialform(d::Derivation) = d.sf
 
 steps(d::Derivation) = d.steps
 
-ensure_production_index(d::Derivation, prod::Int) = if 1 <= prod <= length(d.G.P) return prod else throw(ArgumentError("There is no production of index {} in G")) end
+ensure_production_index(d::Derivation, prod::Int)::Int = if 1 <= prod <= length(d.G.P) return prod else throw(ArgumentError("There is no production of index {} in G")) end
 
-ensure_production_index(d::Derivation, prod::Production) = if prod ∈ d.G.P return indexin(prod,d.G.P)[1] else throw(ArgumentError("Production {} does not belong to G")) end
+ensure_production_index(d::Derivation, prod::Production)::Int = if prod ∈ d.G.P return findfirst(x -> x == prod, d.G.P)[1] else throw(ArgumentError("Production {} does not belong to G")) end
 
 ### Operators ###
 
-Base.show(io::IO, d::Derivation) = Base.show(io, d.repr)
+Base.show(io::IO, d::Derivation) = d.repr
 
 Base.:(==)(x::Derivation, y::Derivation) = (x.G, x.steps) == (y.G, y.steps)
 

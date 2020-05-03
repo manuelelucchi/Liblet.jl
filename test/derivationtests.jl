@@ -8,10 +8,10 @@ test_derivation_repr() = begin
         B -> b
     """, false)
     d = Derivation(G)
-    for (p, pros) ∈ [(1, 1), (2, 1), (3, 2)]
-        d = next(d, p, pros)
+    for (prod, pos) ∈ [(1, 1), (2, 1), (3, 2)]
+        d = next(d, prod, pos)
     end
-    string(d) == "S -> A B -> a B -> a b"
+    d.repr == "S -> A B -> a B -> a b"
 end
 
 test_derivation_eq() = begin
@@ -46,7 +46,7 @@ test_derivation_hash() = begin
         d1 = next(d1, prod, pos)
     end
     S = Dict( d0 => 0, d1 => 1)
-    len(S) == 1
+    length(S) == 1
 end
 
 test_derivation_steps() = begin
@@ -70,9 +70,8 @@ test_derivation_byprods() = begin
             B -> b
         """)
     d = Derivation(G)
-    #p = Production("S", ["A", "B"]), Production("A", ["a"]) # Da vedere
-    #(leftmost(p) |> sententialform)== ["a", "B"]
-    # to support derivation with productions
+    p = [Production("S", ["A", "B"]), Production("A", ["a"])]
+    leftmost(d, p) |> sententialform == ["a", "B"]
 end
 
 test_derivation_byprod() = begin
@@ -83,7 +82,7 @@ test_derivation_byprod() = begin
     """)
     d = Derivation(G)
     p = Production("S", ["A", "B"])    
-    (sententialform ∘ leftmost)(p) == ["A", "B"]
+    leftmost(d, p) |> sententialform == ["A", "B"]
 end
 
 test_derivation_steps_list() = begin
@@ -92,9 +91,10 @@ test_derivation_steps_list() = begin
         A -> a
         B -> b
     """, false)
-    s = [(1, 1), (2, 1), (3, 2)]
-    d = Derivation(G) |> x -> next(x,s)
-    s == steps(d)
+    k = [(1, 1), (2, 1), (3, 2)]
+    d = Derivation(G) 
+    d = next(d,k)
+    k == steps(d)
 end
 
 test_derivation_wrong_step() = begin
@@ -151,6 +151,7 @@ test_derivation_leftmost_allterminals() = begin
         (x -> leftmost(x, 3)) |>
         (x -> leftmost(x, 3)) |>
         (x -> leftmost(x, 3))
+    leftmost(d, 3)
 end
 
 test_derivation_leftmost_wrongsymbol() = begin
@@ -165,7 +166,7 @@ test_derivation_leftmost_wrongsymbol() = begin
         (x -> leftmost(x, 1)) |>
         (x -> leftmost(x, 4)) |>
         (x -> leftmost(x, 3))
-    leftmost(d, 3)
+    leftmost(d, 4)
 end
 
 test_derivation_rightmost() = begin
@@ -175,12 +176,10 @@ test_derivation_rightmost() = begin
         B -> b
     """)
     d = Derivation(G) |>
-        (x -> rightmost(x, 2)) |>
-        (x -> rightmost(x, 5)) |>
         (x -> rightmost(x, 1)) |>
-        (x -> rightmost(x, 4)) |>
-        (x -> rightmost(x, 3))
-    s = [(0, 0), (2, 1), (1, 0)]
+        (x -> rightmost(x, 3)) |>
+        (x -> rightmost(x, 2))
+    s = [(1, 1), (3, 2), (2, 1)]
     s == steps(d)
 end
 
@@ -191,7 +190,7 @@ test_derivation_rightmost_list() = begin
         B -> b
     """)
     d = Derivation(G) |> x -> rightmost(x,[1, 3, 2])
-    s = [(0, 0), (2, 1), (1, 0)]
+    s = [(1, 1), (3, 2), (2, 1)]
     s == steps(d)
 end
 
@@ -208,6 +207,7 @@ test_derivation_rightmost_allterminals() = begin
         (x -> rightmost(x, 4)) |>
         (x -> rightmost(x, 3)) |>
         (x -> rightmost(x, 3))
+        rightmost(d, 3)
 end
 
 test_derivation_rightmost_wrongsymbol() = begin
@@ -218,8 +218,8 @@ test_derivation_rightmost_wrongsymbol() = begin
     """)
     d = Derivation(G) |>
         (x -> rightmost(x, 1)) |>
-        (x -> rightmost(x, 4)) |>
-    rightmost(d, 3)
+        (x -> rightmost(x, 4))
+    rightmost(d, 4)
 end
 
 test_derivation_possible_steps() = begin
@@ -228,7 +228,7 @@ test_derivation_possible_steps() = begin
         A -> a
         B -> b
     """, false)
-    expected = [(1, 0), (2, 1)]
+    expected = [(2, 1), (3, 2)]
     actual = Derivation(G) |> (x -> next(x, 1, 1)) |> possiblesteps |> collect
     actual == expected
 end
@@ -239,7 +239,7 @@ test_derivation_possible_steps_prod() = begin
         A -> a
         B -> b
     """, false)
-    expected = [(1, 0)]
+    expected = [(2, 1)]
     actual = Derivation(G) |> (x -> next(x, 1, 1)) |> (x-> possiblesteps(x, prod = 2)) |> collect
     expected == actual
 end
@@ -250,7 +250,7 @@ test_derivation_possible_steps_pos() = begin
         A -> a
         B -> b
     """, false)
-    expected = [(2, 2)]
+    expected = [(3, 2)]
     actual = Derivation(G) |> (x -> next(x, 1, 1)) |> (x-> possiblesteps(x, pos = 2)) |> collect
     expected == actual
 end
@@ -265,10 +265,9 @@ function runderivationtests()
         @test test_derivation_steps()
         @test test_derivation_byprods()
         @test test_derivation_byprod()
-        @test test_derivation_byprod()
         @test test_derivation_steps_list()
         @test_throws ArgumentError test_derivation_wrong_step()
-        @test_throws ArgumentError test_derivation_leftmost()
+        @test test_derivation_leftmost()
         @test test_derivation_leftmost_list()
         @test_throws ArgumentError test_derivation_leftmost_ncf()
         @test_throws ArgumentError test_derivation_leftmost_allterminals()
