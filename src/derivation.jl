@@ -180,7 +180,7 @@ ensure_production_index(d::Derivation, prod::Production)::Int = if prod ∈ d.G.
 
 ### Operators ###
 
-Base.show(io::IO, d::Derivation) = d.repr
+Base.show(io::IO, d::Derivation) = Base.show(io, d.repr)
 
 Base.:(==)(x::Derivation, y::Derivation) = (x.G, x.steps) == (y.G, y.steps)
 

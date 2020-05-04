@@ -44,7 +44,7 @@ end
 
 """
     parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
-Returns an Array of Productions obtained from the given string.
+Returns an Array of [`Production`](@ref) obtained from the given string.
 """
 function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
     P = []
@@ -89,7 +89,7 @@ end
 
 """
     astype0(p::Production)::Production
-Returns a new `Production` that is type 0
+Returns a new [`Production`](@ref) that is type 0
 """
 astype0(p::Production)::Production = typeof(p.left) <: AbstractArray ? p : Production([p.left], p.right)
 
