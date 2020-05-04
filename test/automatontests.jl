@@ -94,5 +94,3 @@ function runautomatontests()
         @test_throws ArgumentError test_automaton_FN()
     end    
 end
-
-runautomatontests()

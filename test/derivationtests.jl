@@ -282,5 +282,3 @@ function runderivationtests()
         @test test_derivation_possible_steps_pos()
     end
 end
-
-runderivationtests()

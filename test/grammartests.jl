@@ -51,7 +51,6 @@ test_grammar_restrict_to() = begin
     """)
     symbols = G.T ∪ G.N - Set(["X", "x"])
     Gt = restrict(G, symbols)
-    #print((Gt, Gr))
     Gt == Gr
 end
 
@@ -89,11 +88,14 @@ function rungrammartests()
         @test !test_grammar_not_cf()
         @test_throws ArgumentError test_grammar_wrong_cf()
         @test_throws ArgumentError test_grammar_extrasymbol()
-        #@test test_grammar_from_to_string()
-    
+
+        # restrict
         @test test_grammar_restrict_to()
         @test_throws ArgumentError test_grammar_restrict_to_no_start()
     
+        # alternative 
         @test test_alternatives()
     end
 end
+
+rungrammartests()
