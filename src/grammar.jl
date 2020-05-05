@@ -2,7 +2,9 @@ import Base
 
 include("production.jl")
 
-"A grammar."
+"""
+A grammar, represented as a tuple ``G=(N,T,P,S)``
+"""
 struct Grammar
     "The nonterminal symbols Set"
     N::Set
@@ -17,6 +19,10 @@ end
 
 ### Constructors ###
 
+"""
+    Grammar(N::Set, T::Set, P::Array, S::AbstractString)::Grammar
+Builds a [`Grammar`](@ref) obtained from the given string of productions.
+"""
 function Grammar(N, T, P, S) 
     cf = all(x -> isa(x.left, AbstractString), P)
     if (N ∩ T) ≠ Set()
@@ -40,7 +46,7 @@ end
 
 """
     Grammar(prods::AbstractString, iscontextfree = true)::Grammar
-Builds a grammar obtained from the given string of productions.
+Builds a [`Grammar`](@ref) obtained from the given string of productions.
 """
 function Grammar(prods::AbstractString, iscontextfree = true)::Grammar
     P = parseproduction(prods, iscontextfree)
@@ -57,9 +63,6 @@ function Grammar(prods::AbstractString, iscontextfree = true)::Grammar
         N = Set(filter(x -> isuppercase(x[1]), symbols))
         T = symbols - N - "ε"
     end
-    #println(N)
-    #println(T)
-    #println(P)
     G = Grammar(N, T, P, S)
     if iscontextfree
         if ~G.iscontextfree 
@@ -79,7 +82,7 @@ alternatives(g::Grammar, N::Union{AbstractString, Iterable})::Array = [P.right f
 
 """
     restrict(g::Grammar, symbols::Set)
-Returns a grammar using only the given symbols.
+Returns a [`Grammar`](@ref) using only the given symbols.
 """
 restrict(g::Grammar, symbols::Set) = Grammar(g.N ∩ symbols, g.T ∩ symbols, [P for P ∈ g.P if (Set([P.left]) ∪ Set(P.right)) ≤ symbols], g.S)
 

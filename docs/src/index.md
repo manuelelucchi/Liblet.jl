@@ -1,6 +1,8 @@
 # Liblet.jl
 
-## Manual Outline
+## Getting Started
+
+## Manual
 
 ```@contents
 Pages = [
@@ -12,3 +14,5 @@ Pages = [
 ]
 Depth = 1
 ```
+
+## Tutorials

@@ -21,8 +21,8 @@ Returns an Array of [`Item`](@ref) obtained from the given string.
 parseitem(input::AbstractString, iscontextfree::Bool = true)::Array{Item} = parseproduction(input, iscontextfree) |> (x->map(y-> Item(y), x))
 
 """
-    astype0(p::Production)::Production
-Returns a new [`Production`](@ref) that is type 0
+    astype0(p::Item)::Item
+Returns a new [`Item`](@ref) that is type 0
 """
 astype0(i::Item)::Item = isa(i.left, AbstractArray) ? i : Item([i.left], i.right, i.pos)
 
@@ -34,7 +34,7 @@ afterdotsymbol(item::Item)::Union{AbstractString,Nothing} = item.pos < length(it
 
 """
     advance(item::Item, x::AbstractString)::Item
-Returns a new `[Item`](@ref) obtained advancing the dot past the given symbol.
+Returns a new [`Item`](@ref) obtained advancing the dot past the given symbol.
 """
 advance(item::Item, x::AbstractString)::Union{Item,Nothing} = item.pos < length(item.right) ? Item(item.left, item.right, item.pos+1) : nothing
 

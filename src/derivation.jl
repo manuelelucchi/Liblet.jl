@@ -4,6 +4,9 @@ include("grammar.jl")
 
 HAIR_SPACE = '\u200a'
 
+"""
+A *derivation*.
+"""
 struct Derivation
     "The grammar to which the derivations refers to."
     G::Grammar
@@ -19,7 +22,7 @@ end
 
 """
     Derivation(G::Grammar)::Derivation 
-Builds a Derivation from a given Grammar.
+Builds a [`Derivation`](@ref) from a given [`Grammar`](@ref).
 """
 Derivation(G::Grammar)::Derivation = Derivation(G, [], [G.S], G.S)
 
@@ -27,7 +30,7 @@ Derivation(G::Grammar)::Derivation = Derivation(G, [], [G.S], G.S)
 
 """
     next(d::Derivation, prod::Int, pos::Int)::Derivation
-Applies the specified production(s) to the given position in the sentential form.
+Applies the specified production to the given position in the sentential form.
 """
 function next(d::Derivation, prod::Int, pos::Int)::Derivation
     sf = d.sf
@@ -41,11 +44,19 @@ function next(d::Derivation, prod::Int, pos::Int)::Derivation
     return clone
 end
 
+"""
+    next(d::Derivation, prod::Production, pos::Int)::Derivation
+Applies the specified [`Production`](@ref) to the given position in the sentential form.
+"""
 function next(d::Derivation, prod::Production, pos::Int)::Derivation
     p = ensure_production_index(d, prod)
     return next(d, p, pos)
 end
 
+"""
+    next(d::Derivation, prod::Int, pos::Int)::Derivation
+Applies the specified productions to the given position in the sentential form, one by one
+"""
 function next(d::Derivation, prod::AbstractArray{Tuple{Int, Int}})::Derivation
     res = d
     for (nprod, pos) ∈ prod
@@ -57,7 +68,7 @@ end
 """
     leftmost(d::Derivation, prod::Int)::Derivation
 Performs a *leftmost* derivation step.
-Applies the specified production(s) to the current leftmost nonterminal in the sentential form.
+Applies the specified production to the current leftmost nonterminal in the sentential form.
 """
 function leftmost(d::Derivation, prod::Int)::Derivation
     if ~d.G.iscontextfree
@@ -78,11 +89,21 @@ function leftmost(d::Derivation, prod::Int)::Derivation
     throw(ArgumentError("Cannot apply: the leftmost nonterminal of"))
 end
 
+"""
+    leftmost(d::Derivation, prod::Production)::Derivation
+Performs a *leftmost* derivation step.
+Applies the specified [`Production`](@ref) to the current leftmost nonterminal in the sentential form.
+"""
 function leftmost(d::Derivation, prod::Production)::Derivation
     p = ensure_production_index(d,prod)
     return leftmost(d, p)
 end
 
+"""
+    leftmost(d::Derivation, prod::AbstractArray{Production})::Derivation
+Performs a *leftmost* derivation step.
+Applies the specified productions to the current leftmost nonterminal in the sentential form, one by one.
+"""
 function leftmost(d::Derivation, prod::AbstractArray{Production})::Derivation
     res = d
     for i ∈ prod 
@@ -91,6 +112,11 @@ function leftmost(d::Derivation, prod::AbstractArray{Production})::Derivation
     return res
 end
 
+"""
+    leftmost(d::Derivation, prod::AbstractArray{Int})::Derivation
+Performs a *leftmost* derivation step.
+Applies the specified productions to the current leftmost nonterminal in the sentential form, one by one.
+"""
 function leftmost(d::Derivation, prod::AbstractArray{Int})::Derivation
     res = d
     for i ∈ prod 
@@ -123,11 +149,21 @@ function rightmost(d::Derivation, prod::Int)::Derivation
     throw(ArgumentError("Cannot apply: the rightmost nonterminal of"))
 end
 
+"""
+    rightmost(d::Derivation, prod::Production)::Derivation
+Performs a *rightmost* derivation step.
+Applies the specified [`Production`](@ref) to the current rightmost nonterminal in the sentential form.
+"""
 function rightmost(d::Derivation, prod::Production)::Derivation
     p = ensure_production_index(d,prod)
     return rightmost(d, p)
 end
 
+"""
+    rightmost(d::Derivation, prod::Int)::Derivation
+Performs a *rightmost* derivation step.
+Applies the specified productions to the current rightmost nonterminal in the sentential form, one by one.
+"""
 function rightmost(d::Derivation, prod::AbstractArray{Int})::Derivation
     res = d
     for i ∈ prod 
@@ -136,6 +172,11 @@ function rightmost(d::Derivation, prod::AbstractArray{Int})::Derivation
     return res
 end
 
+"""
+    rightmost(d::Derivation, prod::AbstractArray{Production})::Derivation
+Performs a *rightmost* derivation step.
+Applies the specified productions to the current rightmost nonterminal in the sentential form, one by one.
+"""
 function rightmost(d::Derivation, prod::AbstractArray{Production})::Derivation
     res = d
     for i ∈ prod 
@@ -168,10 +209,14 @@ end
 
 """
     sententialform(d::Derivation)
-Returns the sentential form of the Derivation.
+Returns the sentential form of the [`Derivation`](@ref).
 """
 sententialform(d::Derivation) = d.sf
 
+"""
+    steps(d::Derivation)
+Returns the steps performed by the [`Derivation`](@ref)
+"""
 steps(d::Derivation) = d.steps
 
 ensure_production_index(d::Derivation, prod::Int)::Int = if 1 <= prod <= length(d.G.P) return prod else throw(ArgumentError("There is no production of index {} in G")) end

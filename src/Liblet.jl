@@ -1,10 +1,14 @@
 module Liblet
 
+export Iterable
+
 export Automaton, δ
 
 export Transition, parsetransitions
 
 export Grammar, alternatives, restrict
+
+export AbstractProduction
 
 export Production, parseproduction, suchthat, astype0
 

@@ -1,5 +1,5 @@
-## Getting Started
+# Getting Started
 
 ## Installation
 
-## First Step
+## First Steps

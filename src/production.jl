@@ -2,12 +2,14 @@ import Base
 
 include("utils.jl")
 
-"Base type for productions"
+"""
+Supertype for productions.
+[`Production`](@ref) and other types are subtypes of this.
+"""
 abstract type AbstractProduction end
 
 """
-    Production
-A grammar production.
+A grammar production, consisting of a left side and a right side
 """
 struct Production <: AbstractProduction
     "The left-hand side of the production"

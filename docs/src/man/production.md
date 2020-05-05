@@ -2,8 +2,6 @@
 
 ## Introduction
 
-## AbstractProduction
-
 ```@docs 
 AbstractProduction
 ```
@@ -25,7 +23,7 @@ astype0(p::Production)
 ```@docs
 Item
 
-parseitem(input::AbstractString, iscontexfree::Bool)::Array{Item}
+parseitem(input::AbstractString, iscontexfree::Bool)
 
 astype0(i::Item)
 

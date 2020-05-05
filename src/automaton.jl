@@ -6,9 +6,7 @@ include("transition.jl")
 DIAMOND = "◇"
 
 """
-An automaton.
-
-This class represents a (*nondeterministic*) *finite automaton*.
+This type represents a (*nondeterministic*) *finite automaton*, defined as a tuple ``A=(N,T,transitions,q0,F)``
 """
 struct Automaton
     "The states of the automaton."
@@ -22,7 +20,8 @@ struct Automaton
     "The set of *final* states."
     F::Set
     """
-    Builds an automaton obtained from the given components.
+        Automaton(N::Iterable, T::Iterable, transitions::Iterable, q0::AbstractString, F::Iterable)
+    Builds an [`Automaton`](@ref) obtained from the given components.
     """
     function Automaton(N::Iterable, T::Iterable, transitions::Iterable, q0::AbstractString, F::Iterable)
         N = isa(N, Set) ? N : Set(N)
@@ -39,7 +38,8 @@ struct Automaton
 end
 
 """
-Builds an automaton obtained from the given transitions.
+    Automaton(transitions::AbstractString, F::Union{Nothing,Set} = nothing, q0::Union{Nothing, AbstractString} = nothing)::Automaton
+Builds an [`Automaton`](@ref) obtained from the given transitions.
 """
 function Automaton(transitions::AbstractString, F::Union{Nothing,Set} = nothing, q0::Union{Nothing, AbstractString} = nothing)::Automaton
     transitions = parsetransitions(transitions)
@@ -52,7 +52,8 @@ function Automaton(transitions::AbstractString, F::Union{Nothing,Set} = nothing,
 end
 
 """
-Builds the automaton corresponding to the given *regular grammar*.
+    Automaton(G::Grammar)::Automaton 
+Builds the [`Automaton`](@ref) corresponding to the given *regular* [`Grammar`](@ref).
 """
 function Automaton(G::Grammar)::Automaton 
     transitions = []
