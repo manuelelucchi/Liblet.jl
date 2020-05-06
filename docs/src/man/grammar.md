@@ -1,4 +1,4 @@
-# Grammar
+# [Grammar](@id man-grammar)
 
 ```@docs
 

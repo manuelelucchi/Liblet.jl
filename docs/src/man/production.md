@@ -1,12 +1,14 @@
 # Productions
 
+Productions are the most basic thing in languages, translators and compilers.
+
 ## Introduction
 
 ```@docs 
 AbstractProduction
 ```
 
-## Production
+## [Production](@id man-production)
 
 ```@docs
 Production
@@ -18,7 +20,9 @@ suchthat()
 astype0(p::Production)
 ```
 
-## Item
+## [Item](@id man-item)
+
+For the purpose of presenting the [Knuth Automaton](https://en.wikipedia.org/wiki/LR_parser#Finite_state_machine) in the context of LR(0) parsing, Item is an extended Production that includes a dot.
 
 ```@docs
 Item

@@ -1,4 +1,6 @@
-# Derivation
+# [Derivation](@id man-derivation)
+
+You can build derivations from a given Grammar.
 
 ```@docs
 

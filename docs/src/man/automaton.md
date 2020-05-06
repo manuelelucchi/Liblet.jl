@@ -1,4 +1,6 @@
-# Automaton
+# [Automaton](@id man-automaton)
+
+Using these types and methods, you can build a Finite State Automaton.
 
 ```@docs
 Automaton
