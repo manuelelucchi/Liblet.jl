@@ -5,11 +5,12 @@ struct Item <: AbstractProduction
     left::Union{AbstractString, AbstractArray}
     right::Union{AbstractString, AbstractArray}
     pos::Int
-    function Item(left, right, pos::Int = 0)
+    function Item(left, right, pos::Int = 1)
+        if pos < 1 || pos > length(right)+1 throw(ArgumentError("The dot position is invalid.")) end
         p = Production(left, right)
         return Item(p, pos)
     end
-    Item(prod::Production, pos::Int = 0) = new(prod.left, prod.right, pos)
+    Item(prod::Production, pos::Int = 1) = new(prod.left, prod.right, pos)
 end
 
 ### Functions ###
@@ -30,13 +31,13 @@ astype0(i::Item)::Item = isa(i.left, AbstractArray) ? i : Item([i.left], i.right
     afterdotsymbol(item::Item)::Union{AbstractString,Nothing}
 Returns the symbol after the dot.
 """
-afterdotsymbol(item::Item)::Union{AbstractString,Nothing} = item.pos < length(item.right) ? item.right[item.pos] : nothing
+afterdotsymbol(item::Item)::Union{AbstractString,Nothing} = item.pos <= length(item.right) ? item.right[item.pos] : nothing
 
 """
     advance(item::Item, x::AbstractString)::Item
 Returns a new [`Item`](@ref) obtained advancing the dot past the given symbol.
 """
-advance(item::Item, x::AbstractString)::Union{Item,Nothing} = item.pos < length(item.right) ? Item(item.left, item.right, item.pos+1) : nothing
+advance(item::Item, x::AbstractString)::Union{Item,Nothing} = if item.pos <= length(item.right) && item.right[item.pos] == x return Item(item.left, item.right, item.pos+1) else nothing end
 
 ### Operators ###
 
@@ -44,9 +45,11 @@ Base.:(==)(x::Item, y::Item) = (x.left, x.right, x.pos) == (y.left, y.right, y.p
 
 Base.:<(x::Item, y::Item) = (x.left, x.right, x.pos) == (y.left, y.right, y.pos)
 
+Base.:>(x::Item, y::Item) = !(x==y || x<y)
+
 Base.hash(x::Item) = Base.hash((x.left, x.right, x.pos))
 
-Base.show(io::IO, x::Item) = Base.show(io, (x.left, x.right, x.pos))
+Base.show(io::IO, x::Item) = Base.show(io, string(x.left, "->", x.right[begin:x.pos-1],"•", x.right[x.pos:end]))
 
 Base.iterate(x::Item, i...) = Base.iterate((x.left, x.right, x.pos), i...)
 
