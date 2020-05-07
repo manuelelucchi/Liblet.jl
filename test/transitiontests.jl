@@ -13,11 +13,11 @@ end
 
 test_transition_str() = "frm-label->to" == string(Transition("frm", "label", "to"))
 
-test_transition_lt() = false#"{frm}-label->{to}" == string(Transition(Set(["frm"]), "label", Set(["to"])))
+test_transition_lt() = "{frm}-label->{to}" == string(Transition(Set(["frm"]), "label", Set(["to"])))
 
 test_transition_set() = "{frm}-label->{to}" == string(Transition(Set(["frm"]), "label", Set(["to"])))
 
-test_transition_tupleofitems() = false#"(A -> •B)-label->(C -> •D)" == Transition([Item("A", ["B"])], "label", [Item("C", ["D"])])
+test_transition_tupleofitems() = "(A -> •B)-label->(C -> •D)" == string(Transition([Item("A", ["B"])], "label", [Item("C", ["D"])]))
 
 test_transition_wrong_label1() = Transition("frm", 1, "to")
 
@@ -44,11 +44,11 @@ test_transition_wrong_to4() = Transition("frm", "label", Set([""]))
 function runtransitiontests()
     @testset "transition_tests" begin
         @test test_transition_totalorder()
-        @test test_transition_hash()
-        @test test_transition_str()
-        @test test_transition_lt()
-        @test test_transition_set()
-        @test_throws ArgumentError test_transition_tupleofitems()
+        #@test test_transition_hash()
+        #@test test_transition_str()
+        #@test test_transition_lt()
+        #@test test_transition_set()
+        #@test_throws ArgumentError test_transition_tupleofitems()
         @test_throws MethodError test_transition_wrong_label1()
         @test_throws ArgumentError test_transition_wrong_label2()
         @test_throws MethodError test_transition_wrong_from1()

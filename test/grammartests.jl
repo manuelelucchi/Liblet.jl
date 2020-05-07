@@ -86,6 +86,7 @@ function rungrammartests()
         @test_throws ArgumentError test_grammar_wrongstart()
         @test test_grammar_cf()
         @test !test_grammar_not_cf()
+        #@test test_grammar_from_to_string()
         @test_throws ArgumentError test_grammar_wrong_cf()
         @test_throws ArgumentError test_grammar_extrasymbol()
 

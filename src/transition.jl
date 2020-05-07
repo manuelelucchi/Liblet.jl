@@ -71,6 +71,7 @@ end
 
 Base.:<(t1::Transition, t2::Transition) = (t1.from, t1.label, t1.to) < (t2.from, t2.label, t2.to)
 Base.:(==)(t1::Transition, t2::Transition) = (t1.from, t1.label, t1.to) == (t2.from, t2.label, t2.to)
+Base.:>(t1::Transition, t2::Transition) = !(t1 == t2 || t1 < t2)
 Base.hash(t::Transition) = Base.hash((t.from, t.label, t.to))
 Base.show(io::IO, e::Transition) = Base.show(io, string(e.from, "-", e.label, "->", e.to))
 Base.iterate(x::Transition, i...) = Base.iterate((x.from, x.label, x.to))
