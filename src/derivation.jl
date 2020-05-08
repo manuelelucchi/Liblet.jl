@@ -36,7 +36,7 @@ function next(d::Derivation, prod::Int, pos::Int)::Derivation
     sf = d.sf
     prod = ensure_production_index(d, prod)
     P = astype0(d.G.P[prod])
-    if sf[pos:pos+length(P.left)-1] != P.left throw(ArgumentError("Cannot apply")) end
+    if sf[pos:pos+length(P.left)-1] != P.left throw(ArgumentError("Cannot apply " * string(P) * " at position " * string(pos) * " of " * string(sf))) end
     sf = [c for c ∈ [sf[begin:pos-1]; P.right; sf[pos + length(P.left):end]] if c ≠ "ε"]
     steps = [d.steps; [(prod, pos)]]
     repr = string(d.repr," -> ", join(sf,HAIR_SPACE))
@@ -75,18 +75,18 @@ function leftmost(d::Derivation, prod::Int)::Derivation
         throw(ArgumentError("Cannot perform a leftmost derivation on a non context-free grammar"))
     end
     if length(d.sf) == 0
-        throw(ArgumentError("Cannot apply: there are non terminals"))
+        throw(ArgumentError("Cannot apply " * string(d.G.P[prod]) * ": there are non terminals in " * string(d.sf)))
     end
     for (pos, symbol) ∈ enumerate(d.sf)
         if symbol ∈ d.G.N
             if d.G.P[prod].left == symbol
                 return next(d, prod, pos)
             else 
-                throw(ArgumentError("Cannot apply: the leftmost nonterminal of"))
+                throw(ArgumentError("Cannot apply " * string(d.G.P[prod]) * ": the leftmost nonterminal of " * string(d.sf) * " is " * string(symbol)))
             end
         end
     end
-    throw(ArgumentError("Cannot apply: the leftmost nonterminal of"))
+    throw(ArgumentError("The specified production could not be found"))
 end
 
 """
@@ -132,21 +132,21 @@ Applies the specified production(s) to the current rightmost nonterminal in the 
 """
 function rightmost(d::Derivation, prod::Int)::Derivation
     if ~d.G.iscontextfree
-        throw(ArgumentError("Cannot perform a leftmost derivation on a non context-free grammar"))
+        throw(ArgumentError("Cannot perform a rightmost derivation on a non context-free grammar"))
     end
     if length(d.sf) == 0
-        throw(ArgumentError("Cannot apply: there are non terminals"))
+        throw(ArgumentError("Cannot apply " * string(d.G.P[prod]) * ": there are non terminals in " * string(d.sf)))
     end
     for (pos, symbol) ∈ (enumerate(d.sf) |> collect |> reverse)
         if symbol ∈ d.G.N
             if d.G.P[prod].left == symbol
                 return next(d, prod, pos)
             else 
-                throw(ArgumentError(" Cannot apply: the leftmost nonterminal of"))
+                throw(ArgumentError("Cannot apply " * string(d.G.P[prod]) * ": the rightmost nonterminal of " * string(d.sf) * " is " * string(symbol)))
             end
         end
     end
-    throw(ArgumentError("Cannot apply: the rightmost nonterminal of"))
+    throw(ArgumentError("The specified production could not be found"))
 end
 
 """
@@ -219,9 +219,9 @@ Returns the steps performed by the [`Derivation`](@ref)
 """
 steps(d::Derivation) = d.steps
 
-ensure_production_index(d::Derivation, prod::Int)::Int = if 1 <= prod <= length(d.G.P) return prod else throw(ArgumentError("There is no production of index {} in G")) end
+ensure_production_index(d::Derivation, prod::Int)::Int = if 1 <= prod <= length(d.G.P) return prod else throw(ArgumentError("There is no production of index " * string(prod) * " in G")) end
 
-ensure_production_index(d::Derivation, prod::Production)::Int = if prod ∈ d.G.P return findfirst(x -> x == prod, d.G.P)[1] else throw(ArgumentError("Production {} does not belong to G")) end
+ensure_production_index(d::Derivation, prod::Production)::Int = if prod ∈ d.G.P return findfirst(x -> x == prod, d.G.P)[1] else throw(ArgumentError("Production " * string(prod) * " does not belong to G")) end
 
 ### Operators ###
 

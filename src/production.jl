@@ -24,7 +24,7 @@ struct Production <: AbstractProduction
         elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && ~isempty(left) && all(x-> typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), left)
             l = collect(left) 
         else
-            throw(ArgumentError("Error in lhs"))
+            throw(ArgumentError("The left-hand side is not a nonempty String, nor an iterable of nonempty strings."))
         end
     
         if typeof(right) <: AbstractString && right ≠ nothing && ~isempty(left)
@@ -32,7 +32,7 @@ struct Production <: AbstractProduction
         elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && ~isempty(right) && all(x-> typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), right)
             r = collect(right)
         else
-            throw(ArgumentError("Error in rhs"))
+            throw(ArgumentError("The right-hand side is not an iterable of nonempty strings"))
         end
     
         if "ε" ∈ r && length(r) ≠ 1
@@ -55,7 +55,7 @@ function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Arr
         left = split(l)
         if iscontextfree
             if length(left) ≠ 1
-                throw(ArgumentError("Production marked as context free while it's not")) # To improve
+                throw(ArgumentError("Production " * p * " marked as context free while it's not"))
             end
             left = left[1]
         end

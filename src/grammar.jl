@@ -26,7 +26,7 @@ Builds a [`Grammar`](@ref) obtained from the given string of productions.
 function Grammar(N, T, P, S) 
     cf = all(x -> isa(x.left, AbstractString), P)
     if (N ∩ T) ≠ Set()
-        throw(ArgumentError("The set of terminals and nonterminals are not disjoint"))
+        throw(ArgumentError("The set of terminals and nonterminals are not disjoint, but have " * string(collect(N ∩ T)) * " in common"))
     end
     if S ∉ N
         throw(ArgumentError("The start symbol is not a nonterminal."))
@@ -34,12 +34,12 @@ function Grammar(N, T, P, S)
     if cf
         badprods = [p for p ∈ P if p.left ∉ N]
         if !isempty(badprods)
-            throw(ArgumentError("Error: Bad Productions"))
+            throw(ArgumentError("The following productions have a left-hand side that is not a nonterminal: " * string(badprods)))
         end
     end
     badprods = [p for p ∈ P if (Set(astype0(p).left) ∪ Set(p.right)) ⊈ (N ∪ T ∪ Set(["ε"]))] 
     if ~isempty(badprods)
-        throw(ArgumentError("Error: Bad Productions"))
+        throw(ArgumentError("The following productions contain symbols that are neither terminals or nonterminals: " * string(badprods)))
     end
     Grammar(N, T, P, S, cf)
 end
@@ -84,7 +84,7 @@ alternatives(g::Grammar, N::Union{AbstractString, Iterable})::Array = [P.right f
     restrict(g::Grammar, symbols::Set)
 Returns a [`Grammar`](@ref) using only the given symbols.
 """
-restrict(g::Grammar, symbols::Set) = Grammar(g.N ∩ symbols, g.T ∩ symbols, [P for P ∈ g.P if (Set([P.left]) ∪ Set(P.right)) ≤ symbols], g.S)
+restrict(g::Grammar, symbols::Set) = if g.S ∉ symbols throw(ArgumentError("The start symbol must be present among the symbols to keep.")) else Grammar(g.N ∩ symbols, g.T ∩ symbols, [P for P ∈ g.P if (Set([P.left]) ∪ Set(P.right)) ≤ symbols], g.S) end
 
 ### Operators ###
 

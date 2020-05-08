@@ -28,11 +28,11 @@ struct Automaton
         T = isa(T, Set) ? T : Set(T)
         F = isa(F, Set) ? F : Set(F)
         transitions = if all(x->isa(x, Transition), transitions) collect(transitions) else throw(ArgumentError("There are non-transitions in the transitions set")) end
-        if ~isempty(N ∩ T) throw(ArgumentError("The set of states and input symbols are not disjoint, but have in common.")) end
-        if q0 ∉ N throw(ArgumentError("The specified q0 is not a state.")) end
-        if F ⊈ N throw(ArgumentError("The accepting states in F are not states.")) end
+        if ~isempty(N ∩ T) throw(ArgumentError("The set of states and input symbols are not disjoint, but have" * string(collect(N ∩ T)) * "in common.")) end
+        if q0 ∉ N throw(ArgumentError("The specified q0 (" * q0 * ") is not a state.")) end
+        if F ⊈ N throw(ArgumentError("The accepting states " * string(collect(F - N)) * " in F are not states.")) end
         bad_trans = [t for t ∈ transitions if t.from ∉ N || t.to ∉ N || t.label ∉ (T ∪ Set(["ε"]))]
-        if ~isempty(bad_trans) throw(ArgumentError("The following transitions contain states or symbols that are neither states nor input symbols")) end
+        if ~isempty(bad_trans) throw(ArgumentError("The following transitions contain states or symbols that are neither states nor input symbols: " * string(bad_trans))) end
         return new(N, T, transitions, q0, F)
     end
 end
@@ -59,12 +59,12 @@ function Automaton(G::Grammar)::Automaton
     transitions = []
 
     for P ∈ G.P
-        if length(P.right) > 2 throw(ArgumentError("Production has more than two symbols on the left-hand side")) end
+        if length(P.right) > 2 throw(ArgumentError("Production " * string(P) * " has more than two symbols on the left-hand side")) end
         if length(P.right) == 2
             A = P.left
             a = P.right[1]
             B = P.right[2]
-            if ~(a ∈ G.T && B ∈ G.N) throw(ArgumentError("Production right-hand side is not of the aB form")) end
+            if ~(a ∈ G.T && B ∈ G.N) throw(ArgumentError("Production " * string(P) * " right-hand side is not of the aB form")) end
             push!(transitions, Transition(A, a, B))
         elseif P.right[1] ∈ G.N
             push!(transitions, Transition(P.left, "ε", P.right))
