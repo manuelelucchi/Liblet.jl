@@ -47,6 +47,12 @@ end
 """
     parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
 Returns an Array of [`Production`](@ref) obtained from the given string.
+
+# Examples 
+```julia-repl
+julia> parseproduction("S->A\nA->a")
+["S->A", "S->B"]
+```
 """
 function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
     P = []

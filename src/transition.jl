@@ -16,6 +16,13 @@ struct Transition
     """
         Transition(from::Union{AbstractString, Iterable}, label::AbstractString, to::Union{AbstractString, Iterable})
     Build a transition based on the given states.
+
+    # Examples
+    ```julia-repl
+    julia> t = Transition("from","label","to")
+    julia> t
+    from-label->to
+    ```
     """
     function Transition(from::Union{AbstractString, Iterable}, label::AbstractString, to::Union{AbstractString, Iterable})
         check(s::AbstractString)::Bool = ~isempty(s)
