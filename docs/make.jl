@@ -26,7 +26,6 @@ makedocs(
 deploydocs(
     repo = "https://github.com/manuelelucchi/Liblet.jl.git",
     target = "build",
-    julia = "1.4",
     deps = nothing,
     make = nothing
 )
