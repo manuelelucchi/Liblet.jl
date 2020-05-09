@@ -1,0 +1,13 @@
+include("grammartests.jl")
+include("productiontests.jl")
+include("transitiontests.jl")
+include("automatontests.jl")
+include("itemtests.jl")
+include("derivationtests.jl")
+
+rungrammartests()
+runproductiontests()
+runautomatontests()
+runtransitiontests()
+runderivationtests()
+runitemtests()

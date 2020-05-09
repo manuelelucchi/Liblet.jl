@@ -24,3 +24,6 @@ docs/site/
 Manifest.toml
 
 .vscode/
+
+main.jl
+src/main.jl
