@@ -1,8 +1,8 @@
 # Liblet.jl
 
-| License | Status | Coverage |
-| :----: | :----: | :----: |
-| [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) | [![Build Status](https://travis-ci.com/manuelelucchi/Liblet.jl.svg?branch=master)](https://travis-ci.com/manuelelucchi/Liblet.jl) | [![codecov](https://codecov.io/gh/manuelelucchi/Liblet.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/manuelelucchi/Liblet.jl) |
+| License | Tests | Coverage | Docs |
+| :----: | :----: | :----: | :----: |
+| [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) | [![Tests](https://github.com/manuelelucchi/Liblet.jl/workflows/Tests/badge.svg)](https://github.com/manuelelucchi/Liblet.jl/actions?query=workflow%3ATests) | [![codecov](https://codecov.io/gh/manuelelucchi/Liblet.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/manuelelucchi/Liblet.jl) | [![Docs](https://github.com/manuelelucchi/Liblet.jl/workflows/Docs/badge.svg)](https://github.com/manuelelucchi/Liblet.jl/actions?query=workflow%3ADocs) |
 
 Liblet.jl is a port of the python library [Liblet](https://github.com/let-unimi/liblet)
 
