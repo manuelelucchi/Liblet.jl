@@ -25,7 +25,5 @@ makedocs(
 
 deploydocs(
     repo = "https://github.com/manuelelucchi/Liblet.jl.git",
-    target = "build",
-    deps = nothing,
-    make = nothing
+    branch="master"
 )
