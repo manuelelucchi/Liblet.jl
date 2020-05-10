@@ -19,4 +19,4 @@ jobs:
       - name: Build and deploy
         env:
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
-        run: julia --project=docs/ docs/make.jl
+        #run: julia --project=docs/ docs/make.jl
