@@ -1,1 +1,0 @@
-# [Automatons](@id tutorials-automatons)
