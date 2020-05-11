@@ -25,5 +25,5 @@ makedocs(
 
 deploydocs(
     repo = "github.com/manuelelucchi/Liblet.jl.git",
-    branch="master"
+    branch="gh-pages"
 )
