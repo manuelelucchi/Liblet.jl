@@ -18,7 +18,7 @@ makedocs(
         ],
         "Tutorials" => [
             "Grammars & Derivations" => "tutorials/derivations.md",
-            "Automatons" => "tutorials/derivations.md"
+            "Automatons" => "tutorials/automatons.md"
         ]
     ]
 )
