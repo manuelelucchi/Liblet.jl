@@ -18,15 +18,12 @@ makedocs(
         ],
         "Tutorials" => [
             "Grammars & Derivations" => "tutorials/derivations.md",
-            "Automatons" => "tutorials/derivations.md"
+            "Automatons" => "tutorials/automatons.md"
         ]
     ]
 )
 
 deploydocs(
-    repo = "https://github.com/manuelelucchi/Liblet.jl.git",
-    target = "build",
-    julia = "1.4",
-    deps = nothing,
-    make = nothing
+    repo = "github.com/manuelelucchi/Liblet.jl.git",
+    branch="gh-pages"
 )
