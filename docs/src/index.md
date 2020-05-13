@@ -17,5 +17,5 @@ For now, Liblet.jl exposes the following macro arguments:
 ## Tutorials
 
 This library comes with a set of examples and guides
-* [Derivations & Grammars Tutorial](@id tutorials-derivations)
-* [Automatons Tutorial](@id tutorials-automatons)
+* [Derivations & Grammars Tutorial](@ref tutorials-derivations)
+* [Automatons Tutorial](@ref tutorials-automatons)

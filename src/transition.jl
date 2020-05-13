@@ -5,6 +5,9 @@ import Base
 """
 This type represents an [`Automaton`](@ref) transition. It has a `from` starting
 *state* and a `to` destination *state* and a `label`
+
+    Transition(from::Union{AbstractString, Iterable}, label::AbstractString, to::Union{AbstractString, Iterable})
+Build a transition based on the given states.
 """
 struct Transition
     "The starting state(s) of the transition"
@@ -13,10 +16,6 @@ struct Transition
     label::AbstractString
     "The destination starte(s) of the transition"
     to::Union{AbstractString, Set}
-    """
-        Transition(from::Union{AbstractString, Iterable}, label::AbstractString, to::Union{AbstractString, Iterable})
-    Build a transition based on the given states.
-    """
     function Transition(from::Union{AbstractString, Iterable}, label::AbstractString, to::Union{AbstractString, Iterable})
         check(s::AbstractString)::Bool = ~isempty(s)
         check(s::AbstractProduction)::Bool = true
