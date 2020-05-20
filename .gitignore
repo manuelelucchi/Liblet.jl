@@ -25,5 +25,7 @@ Manifest.toml
 
 .vscode/
 
-main.jl
-src/main.jl
+test/main.ipynb
+test/main.jl
+
+.ipynb_checkpoints

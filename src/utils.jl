@@ -1,8 +1,8 @@
 import Base
 
-const Iterable = Union{Set, AbstractSet, AbstractArray}
+const Iterable = Union{Set,AbstractSet,AbstractArray}
 
-const NullableAbstractString = Union{AbstractString, Nothing}
+const NullableAbstractString = Union{AbstractString,Nothing}
 
 Base.map(f, s::Set) = Set(Base.map(f, collect(s)))
 
