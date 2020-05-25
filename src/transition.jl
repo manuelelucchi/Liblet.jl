@@ -11,16 +11,16 @@ Build a transition based on the given states.
 """
 struct Transition
     "The starting state(s) of the transition"
-    from::Union{AbstractString, Set}
+    from::Union{AbstractString,Set}
     "The label of the transition"
     label::AbstractString
     "The destination starte(s) of the transition"
-    to::Union{AbstractString, Set}
-    function Transition(from::Union{AbstractString, Iterable}, label::AbstractString, to::Union{AbstractString, Iterable})
+    to::Union{AbstractString,Set}
+    function Transition(from::Union{AbstractString,Iterable}, label::AbstractString, to::Union{AbstractString,Iterable})
         check(s::AbstractString)::Bool = ~isempty(s)
         check(s::AbstractProduction)::Bool = true
         check(s)::Bool = false
-        check(s::Iterable) = all(x -> check(x), Set(collect(s))) && ~isempty(s)
+        check(s::Iterable) = all(x->check(x), Set(collect(s))) && ~isempty(s)
     
         f = nothing
         l = nothing
@@ -72,5 +72,6 @@ Base.:<(t1::Transition, t2::Transition) = (t1.from, t1.label, t1.to) < (t2.from,
 Base.:(==)(t1::Transition, t2::Transition) = (t1.from, t1.label, t1.to) == (t2.from, t2.label, t2.to)
 Base.:>(t1::Transition, t2::Transition) = !(t1 == t2 || t1 < t2)
 Base.hash(t::Transition) = Base.hash((t.from, t.label, t.to))
-Base.show(io::IO, e::Transition) = Base.show(io, string(e.from, "-", e.label, "->", e.to))
+Base.show(io::IO, t::Transition) = Base.print(io, t)
+Base.print(io::IO, t::Transition) = Base.print(io, "$(t.from)-$(t.label)->$(t.to)")
 Base.iterate(x::Transition, i...) = Base.iterate((x.from, x.label, x.to))

@@ -1,5 +1,4 @@
 import Base
-using Printf
 
 include("transition.jl")
 
@@ -39,13 +38,13 @@ end
     Automaton(transitions::AbstractString, F::Union{Nothing,Set} = nothing, q0::Union{Nothing, AbstractString} = nothing)::Automaton
 Builds an [`Automaton`](@ref) obtained from the given transitions.
 """
-function Automaton(transitions::AbstractString, F::Union{Nothing,Set} = nothing, q0::Union{Nothing, AbstractString} = nothing)::Automaton
+function Automaton(transitions::AbstractString, F::Union{Nothing,Set} = nothing, q0::Union{Nothing,AbstractString} = nothing)::Automaton
     transitions = parsetransitions(transitions)
     if q0 === nothing q0 = transitions[1].from end
     if F === nothing F = Set() end
 
-    N = Set(map(x::Transition -> x.from, transitions) ∪ map(x::Transition -> x.to, transitions))
-    T = Set(map(x::Transition -> x.label, transitions)) - "ε"
+    N = Set(map(x::Transition->x.from, transitions) ∪ map(x::Transition->x.to, transitions))
+    T = Set(map(x::Transition->x.label, transitions)) - "ε"
     return Automaton(N, T, transitions, q0, F)
 end
 
@@ -86,4 +85,6 @@ This function returns the set of states reachable from the given state and input
 
 ### Operators ###
 
-Base.show(io::IO, a::Automaton) = Base.show(io, @sprintf "Automaton(N=%s, T=%s, transitions=%s, F=%s, q0=%s)" a.N a.T a.F a.transitions a.q0) #TODO
+Base.show(io::IO, a::Automaton) = Base.print(io, a)
+
+Base.print(io::IO, a::Automaton) = Base.print(io, "Automaton(N=$(a.N), T=$(a.T), transitions=$(a.transitions), F=$(a.F), q0=$(a.q0))")
