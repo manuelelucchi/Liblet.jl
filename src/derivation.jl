@@ -36,10 +36,10 @@ function next(d::Derivation, prod::Int, pos::Int)::Derivation
     sf = d.sf
     prod = ensure_production_index(d, prod)
     P = astype0(d.G.P[prod])
-    if sf[pos:pos+length(P.left)-1] != P.left throw(ArgumentError("Cannot apply " * string(P) * " at position " * string(pos) * " of " * string(sf))) end
-    sf = [c for c ∈ [sf[begin:pos-1]; P.right; sf[pos + length(P.left):end]] if c ≠ "ε"]
+    if sf[pos:pos + length(P.left) - 1] != P.left throw(ArgumentError("Cannot apply " * string(P) * " at position " * string(pos) * " of " * string(sf))) end
+    sf = [c for c ∈ [sf[begin:pos - 1]; P.right; sf[pos + length(P.left):end]] if c ≠ "ε"]
     steps = [d.steps; [(prod, pos)]]
-    repr = string(d.repr," -> ", join(sf,HAIR_SPACE))
+    repr = string(d.repr, " -> ", join(sf, HAIR_SPACE))
     clone = Derivation(d.G, steps, sf, repr)
     return clone
 end
@@ -57,7 +57,7 @@ end
     next(d::Derivation, prod::Int, pos::Int)::Derivation
 Applies the specified productions to the given position in the sentential form, one by one
 """
-function next(d::Derivation, prod::AbstractArray{Tuple{Int, Int}})::Derivation
+function next(d::Derivation, prod::AbstractArray{Tuple{Int,Int}})::Derivation
     res = d
     for (nprod, pos) ∈ prod
         res = next(res, nprod, pos)
@@ -95,7 +95,7 @@ Performs a *leftmost* derivation step.
 Applies the specified [`Production`](@ref) to the current leftmost nonterminal in the sentential form.
 """
 function leftmost(d::Derivation, prod::Production)::Derivation
-    p = ensure_production_index(d,prod)
+    p = ensure_production_index(d, prod)
     return leftmost(d, p)
 end
 
@@ -155,7 +155,7 @@ Performs a *rightmost* derivation step.
 Applies the specified [`Production`](@ref) to the current rightmost nonterminal in the sentential form.
 """
 function rightmost(d::Derivation, prod::Production)::Derivation
-    p = ensure_production_index(d,prod)
+    p = ensure_production_index(d, prod)
     return rightmost(d, p)
 end
 
@@ -194,11 +194,11 @@ one of the production in the grammar, returning the position and production numb
 production is specified, it yields only the pairs referring to it; similarly, if a position
 is specified, it yields only the pairs referring to it.
 """
-function possiblesteps(d::Derivation; prod::Union{Int, Nothing} = nothing, pos::Union{Int, Nothing} = nothing)
+function possiblesteps(d::Derivation; prod::Union{Int,Nothing} = nothing, pos::Union{Int,Nothing} = nothing)
     res = []
-    type0prods = map(x -> astype0(x), d.G.P)
+    type0prods = map(x->astype0(x), d.G.P)
     for (n, P) ∈ (prod === nothing ? enumerate(type0prods) : [(prod, type0prods[prod])])
-        for p ∈ (pos === nothing ? range(1, length=(length(d.sf) - length(P.left) + 1)) : [pos])
+        for p ∈ (pos === nothing ? range(1, length = (length(d.sf) - length(P.left) + 1)) : [pos])
             if [d.sf[p:p + length(P.left) - 1]] == P.left || P.left ∈ [d.sf[p:p + length(P.left) - 1]]
                 push!(res, (n, p))
             end
@@ -221,11 +221,11 @@ steps(d::Derivation) = d.steps
 
 ensure_production_index(d::Derivation, prod::Int)::Int = if 1 <= prod <= length(d.G.P) return prod else throw(ArgumentError("There is no production of index " * string(prod) * " in G")) end
 
-ensure_production_index(d::Derivation, prod::Production)::Int = if prod ∈ d.G.P return findfirst(x -> x == prod, d.G.P)[1] else throw(ArgumentError("Production " * string(prod) * " does not belong to G")) end
+ensure_production_index(d::Derivation, prod::Production)::Int = if prod ∈ d.G.P return findfirst(x->x == prod, d.G.P)[1] else throw(ArgumentError("Production " * string(prod) * " does not belong to G")) end
 
 ### Operators ###
 
-Base.show(io::IO, d::Derivation) = Base.show(io, d.repr)
+Base.show(io::IO, d::Derivation) = Base.print(io, d.repr)
 
 Base.:(==)(x::Derivation, y::Derivation) = (x.G, x.steps) == (y.G, y.steps)
 

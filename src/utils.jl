@@ -8,9 +8,24 @@ const NullableAbstractString = Union{AbstractString,Nothing}
 
 const CykTable = Dict{Tuple{Int,Int},Array{String,1}}
 
-stringifyarray(input) = if (collect(input) |> length) > 1 "[$(join(input, ", "))]" else "$(input)" end
+function stringify(input, left, right, keep_brackets)
+    i = collect(input)
+    if length(i) == 1 && isa(input, Iterable)
+        if keep_brackets
+            return "$left$(i[1])$right"
+        else 
+            return "$(i[1])"
+        end
+    elseif length(i) == 1
+        return "$input"
+    else
+        return "$left$(join(i, ", "))$right"
+    end
+end
 
-stringifyset(input; show_brackets_anyway=true) = if (collect(input) |> length) > 1 || show_brackets_anyway "{$(join(input, ", "))}" else "$(input)" end
+stringifyarray(input; keep_brackets = false) = stringify(input, "[", "]", keep_brackets)
+
+stringifyset(input; keep_brackets = true) = stringify(input, "{", "}", keep_brackets)
 
 Base.map(f, s::Set) = Set(Base.map(f, collect(s)))
 

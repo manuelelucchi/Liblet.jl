@@ -94,4 +94,4 @@ Base.hash(g::Grammar) = Base.hash((g.N, g.T, sort(g.P), g.S))
 
 Base.show(io::IO, g::Grammar) = Base.print(io, g)
 
-Base.print(io::IO, g::Grammar) = Base.print(io, "Grammar(N=$(g.N), T=$(g.T), P=$(g.P), S=$(g.S))")
+Base.print(io::IO, g::Grammar) = Base.print(io, "Grammar(N=$(stringifyset(g.N)), T=$(stringifyset(g.T)), P=$(stringifyarray(g.P)), S=$(g.S))")
