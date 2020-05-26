@@ -87,4 +87,4 @@ This function returns the set of states reachable from the given state and input
 
 Base.show(io::IO, a::Automaton) = Base.print(io, a)
 
-Base.print(io::IO, a::Automaton) = Base.print(io, "Automaton(N=$(stringifyset(a.N)), T=$(stringifyset(a.T)), transitions=$(stringifyarray(a.transitions)), F=$(stringifyset(a.F)), q0=$(a.q0))")
+Base.print(io::IO, a::Automaton) = Base.print(io, "Automaton(N=$(stringifyset(a.N)), T=$(stringifyset(a.T)), transitions=$(stringifytuple(a.transitions)), F=$(stringifyset(a.F)), q0=$(a.q0))")

@@ -13,9 +13,9 @@ test_grammar_hash() = begin
     length(S) == 1
 end
 
-test_grammar_nondisjoint() = Grammar(Set(["S", "A"]),Set(["A", "a"]), [], "S")
+test_grammar_nondisjoint() = Grammar(Set(["S", "A"]), Set(["A", "a"]), [], "S")
 
-test_grammar_wrongstart() = Grammar(Set(["T", "A"]),Set(["a"]), [], "S")
+test_grammar_wrongstart() = Grammar(Set(["T", "A"]), Set(["a"]), [], "S")
 
 test_grammar_cf() = Grammar("S -> T U\nT -> t\nU -> u").iscontextfree
 
@@ -31,7 +31,7 @@ test_grammar_from_to_string() = begin
         E -> T | E + T
         T -> i | ( E )
     """)
-    s = "" # to finish
+    s = "Grammar(N={Z, T, E}, T={+, ), (, i}, P=(Z->E, E->T, E->(E, +, T), T->i, T->((, E, ))), S=Z)"
     s == string(G)
 end
 
@@ -81,12 +81,12 @@ end
 function rungrammartests()    
     @testset "grammar_tests" begin
         @test test_grammar_eq()
-        #@test test_grammar_hash()
+        # @test test_grammar_hash()
         @test_throws ArgumentError test_grammar_nondisjoint()
         @test_throws ArgumentError test_grammar_wrongstart()
         @test test_grammar_cf()
         @test !test_grammar_not_cf()
-        #@test test_grammar_from_to_string()
+        @test test_grammar_from_to_string()
         @test_throws ArgumentError test_grammar_wrong_cf()
         @test_throws ArgumentError test_grammar_extrasymbol()
 

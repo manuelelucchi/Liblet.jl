@@ -105,7 +105,7 @@ Base.hash(x::Production) = Base.hash((x.left, x.right))
 
 Base.show(io::IO, x::Production) = Base.print(io, x)
 
-Base.print(io::IO, x::Production) = Base.print(io, "$(stringifyarray(x.left))->$(stringifyarray(x.right))")
+Base.print(io::IO, x::Production) = Base.print(io, "$(stringifytuple(x.left))->$(stringifytuple(x.right))")
 
 Base.iterate(x::Production, i...) = Base.iterate((x.left, x.right), i...)
 

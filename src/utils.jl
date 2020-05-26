@@ -27,6 +27,8 @@ stringifyarray(input; keep_brackets = false) = stringify(input, "[", "]", keep_b
 
 stringifyset(input; keep_brackets = true) = stringify(input, "{", "}", keep_brackets)
 
+stringifytuple(input; keep_brackets = false) = stringify(input, "(", ")", keep_brackets)
+
 Base.map(f, s::Set) = Set(Base.map(f, collect(s)))
 
 Base.:-(a::AbstractSet, b::AbstractSet) = setdiff(a, b)

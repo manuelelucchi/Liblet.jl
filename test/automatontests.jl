@@ -53,7 +53,7 @@ test_automaton_from_string() = begin
         H, 0, G
         H, 1, C
     """, Set(["C"]))
-    s = "Automaton(N={A, B, C, D, E, F, G, H}, T={0, 1}, transitions=(A-0->B, A-1->F, B-0->G, B-1->C, C-1->C, D-0->C, D-1->G, E-0->H, E-1->F, F-0->C, F-1->G, G-0->G, H-0->G, H-1->C), F={C}, q0=A)"
+    s = "Automaton(N={B, A, C, D, G, E, F, H}, T={1, 0}, transitions=(A-0->B, A-1->F, B-0->G, B-1->C, C-1->C, D-0->C, D-1->G, E-0->H, E-1->F, F-0->C, F-1->G, G-0->G, H-0->G, H-1->C), F={C}, q0=A)"
     s == string(A)
 end
 
