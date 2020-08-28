@@ -5,12 +5,12 @@ struct Item <: AbstractProduction
     left::Union{AbstractString,AbstractArray}
     right::Union{AbstractString,AbstractArray}
     pos::Int
-    function Item(left, right, pos::Int = 1)
+    function Item(left, right, pos::Int=1)
         if pos < 1 || pos > length(right) + 1 throw(ArgumentError("The dot position is invalid.")) end
         p = Production(left, right)
         return Item(p, pos)
     end
-    Item(prod::Production, pos::Int = 1) = new(prod.left, prod.right, pos)
+    Item(prod::Production, pos::Int=1) = new(prod.left, prod.right, pos)
 end
 
 ### Functions ###
@@ -19,7 +19,7 @@ end
     parseitem(input::AbstractString, iscontextfree::Bool = true)::Array{Item}
 Returns an Array of [`Item`](@ref) obtained from the given string.
 """
-parseitem(input::AbstractString, iscontextfree::Bool = true)::Array{Item} = parseproduction(input, iscontextfree) |> (x->map(y->Item(y), x))
+parseitem(input::AbstractString, iscontextfree::Bool=true)::Array{Item} = parseproduction(input, iscontextfree) |> (x -> map(y -> Item(y), x))
 
 """
     astype0(p::Item)::Item

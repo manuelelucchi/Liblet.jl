@@ -31,7 +31,7 @@ test_grammar_from_to_string() = begin
         E -> T | E + T
         T -> i | ( E )
     """)
-    s = "Grammar(N={Z, T, E}, T={+, ), (, i}, P=(Z->E, E->T, E->(E, +, T), T->i, T->((, E, ))), S=Z)"
+    s = "Grammar(N={Z, T, E}, T={+, ), (, i}, P=(Z -> E, E -> T, E -> (E, +, T), T -> i, T -> ((, E, ))), S=Z)"
     s == string(G)
 end
 

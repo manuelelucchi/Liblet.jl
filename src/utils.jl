@@ -23,11 +23,11 @@ function stringify(input, left, right, keep_brackets)
     end
 end
 
-stringifyarray(input; keep_brackets = false) = stringify(input, "[", "]", keep_brackets)
+stringifyarray(input; keep_brackets=false) = stringify(input, "[", "]", keep_brackets)
 
-stringifyset(input; keep_brackets = true) = stringify(input, "{", "}", keep_brackets)
+stringifyset(input; keep_brackets=true) = stringify(input, "{", "}", keep_brackets)
 
-stringifytuple(input; keep_brackets = false) = stringify(input, "(", ")", keep_brackets)
+stringifytuple(input; keep_brackets=false) = stringify(input, "(", ")", keep_brackets)
 
 Base.map(f, s::Set) = Set(Base.map(f, collect(s)))
 
@@ -35,4 +35,4 @@ Base.:-(a::AbstractSet, b::AbstractSet) = setdiff(a, b)
 
 Base.:-(a::AbstractSet, b) = setdiff(a, Set([b]))
 
-libletstring(s::Iterable) = collect(s) |> x->join(x, hairspace)
+libletstring(s::Iterable) = collect(s) |> x -> join(x, hairspace)

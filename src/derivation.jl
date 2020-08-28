@@ -36,7 +36,7 @@ function next(d::Derivation, prod::Int, pos::Int)::Derivation
     sf = d.sf
     prod = ensure_production_index(d, prod)
     P = astype0(d.G.P[prod])
-    if sf[pos:pos + length(P.left) - 1] != P.left throw(ArgumentError("Cannot apply " * string(P) * " at position " * string(pos) * " of " * string(sf))) end
+    if sf[pos:pos + length(P.left) - 1] != P.left throw(ArgumentError("Cannot apply $P at position $pos of $sf")) end
     sf = [c for c ∈ [sf[begin:pos - 1]; P.right; sf[pos + length(P.left):end]] if c ≠ "ε"]
     steps = [d.steps; [(prod, pos)]]
     repr = string(d.repr, " -> ", join(sf, HAIR_SPACE))
@@ -75,14 +75,14 @@ function leftmost(d::Derivation, prod::Int)::Derivation
         throw(ArgumentError("Cannot perform a leftmost derivation on a non context-free grammar"))
     end
     if length(d.sf) == 0
-        throw(ArgumentError("Cannot apply " * string(d.G.P[prod]) * ": there are non terminals in " * string(d.sf)))
+        throw(ArgumentError("Cannot apply $(d.G.P[prod]): there are non terminals in $(d.sf)"))
     end
     for (pos, symbol) ∈ enumerate(d.sf)
         if symbol ∈ d.G.N
             if d.G.P[prod].left == symbol
                 return next(d, prod, pos)
             else 
-                throw(ArgumentError("Cannot apply " * string(d.G.P[prod]) * ": the leftmost nonterminal of " * string(d.sf) * " is " * string(symbol)))
+                throw(ArgumentError("Cannot apply $(d.G.P[prod]): the leftmost nonterminal of $(d.sf) is $symbol"))
             end
         end
     end
@@ -135,14 +135,14 @@ function rightmost(d::Derivation, prod::Int)::Derivation
         throw(ArgumentError("Cannot perform a rightmost derivation on a non context-free grammar"))
     end
     if length(d.sf) == 0
-        throw(ArgumentError("Cannot apply " * string(d.G.P[prod]) * ": there are non terminals in " * string(d.sf)))
+        throw(ArgumentError("Cannot apply $(d.G.P[prod]): there are non terminals in $(d.sf)"))
     end
     for (pos, symbol) ∈ (enumerate(d.sf) |> collect |> reverse)
         if symbol ∈ d.G.N
             if d.G.P[prod].left == symbol
                 return next(d, prod, pos)
             else 
-                throw(ArgumentError("Cannot apply " * string(d.G.P[prod]) * ": the rightmost nonterminal of " * string(d.sf) * " is " * string(symbol)))
+                throw(ArgumentError("Cannot apply $(d.G.P[prod]): the rightmost nonterminal of $(d.sf) is $symbol"))
             end
         end
     end
@@ -194,11 +194,11 @@ one of the production in the grammar, returning the position and production numb
 production is specified, it yields only the pairs referring to it; similarly, if a position
 is specified, it yields only the pairs referring to it.
 """
-function possiblesteps(d::Derivation; prod::Union{Int,Nothing} = nothing, pos::Union{Int,Nothing} = nothing)
+function possiblesteps(d::Derivation; prod::Union{Int,Nothing}=nothing, pos::Union{Int,Nothing}=nothing)
     res = []
-    type0prods = map(x->astype0(x), d.G.P)
+    type0prods = map(x -> astype0(x), d.G.P)
     for (n, P) ∈ (prod === nothing ? enumerate(type0prods) : [(prod, type0prods[prod])])
-        for p ∈ (pos === nothing ? range(1, length = (length(d.sf) - length(P.left) + 1)) : [pos])
+        for p ∈ (pos === nothing ? range(1, length=(length(d.sf) - length(P.left) + 1)) : [pos])
             if [d.sf[p:p + length(P.left) - 1]] == P.left || P.left ∈ [d.sf[p:p + length(P.left) - 1]]
                 push!(res, (n, p))
             end
@@ -219,9 +219,9 @@ Returns the steps performed by the [`Derivation`](@ref)
 """
 steps(d::Derivation) = d.steps
 
-ensure_production_index(d::Derivation, prod::Int)::Int = if 1 <= prod <= length(d.G.P) return prod else throw(ArgumentError("There is no production of index " * string(prod) * " in G")) end
+ensure_production_index(d::Derivation, prod::Int)::Int = if 1 <= prod <= length(d.G.P) return prod else throw(ArgumentError("There is no production of index $prod in G")) end
 
-ensure_production_index(d::Derivation, prod::Production)::Int = if prod ∈ d.G.P return findfirst(x->x == prod, d.G.P)[1] else throw(ArgumentError("Production " * string(prod) * " does not belong to G")) end
+ensure_production_index(d::Derivation, prod::Production)::Int = if prod ∈ d.G.P return findfirst(x -> x == prod, d.G.P)[1] else throw(ArgumentError("Production $prod does not belong to G")) end
 
 ### Operators ###
 

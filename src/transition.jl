@@ -20,7 +20,7 @@ struct Transition
         check(s::AbstractString)::Bool = ~isempty(s)
         check(s::AbstractProduction)::Bool = true
         check(s)::Bool = false
-        check(s::Iterable) = all(x->check(x), Set(collect(s))) && ~isempty(s)
+        check(s::Iterable) = all(x -> check(x), Set(collect(s))) && ~isempty(s)
     
         f = nothing
         l = nothing

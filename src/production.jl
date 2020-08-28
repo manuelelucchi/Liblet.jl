@@ -21,7 +21,7 @@ struct Production <: AbstractProduction
         r = nothing
         if typeof(left) <: AbstractString && left ≠ nothing && ~isempty(left)
             l = left
-        elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && ~isempty(left) && all(x->typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), left)
+        elseif (typeof(left) <: AbstractArray || typeof(left) <: AbstractSet || typeof(left) <: Tuple) && ~isempty(left) && all(x -> typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), left)
             l = collect(left) 
         else
             throw(ArgumentError("The left-hand side is not a nonempty String, nor an iterable of nonempty strings."))
@@ -29,7 +29,7 @@ struct Production <: AbstractProduction
     
         if typeof(right) <: AbstractString && right ≠ nothing && ~isempty(left)
             r = right
-        elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && ~isempty(right) && all(x->typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), right)
+        elseif (typeof(right) <: AbstractArray || typeof(right) <: AbstractSet || typeof(right) <: Tuple) && ~isempty(right) && all(x -> typeof(x) <: AbstractString && x ≠ nothing && ~isempty(x), right)
             r = collect(right)
         else
             throw(ArgumentError("The right-hand side is not an iterable of nonempty strings"))
@@ -48,14 +48,14 @@ end
     parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
 Returns an Array of [`Production`](@ref) obtained from the given string.
 """
-function parseproduction(input::AbstractString, iscontextfree::Bool = true)::Array{Production}
+function parseproduction(input::AbstractString, iscontextfree::Bool=true)::Array{Production}
     P = []
-    for p ∈ filter(f::AbstractString->f ≠ "", split(input, "\n"))
+    for p ∈ filter(f::AbstractString -> f ≠ "", split(input, "\n"))
         l, r = split(p, "->")
         left = split(l)
         if iscontextfree
             if length(left) ≠ 1
-                throw(ArgumentError("Production " * p * " marked as context free while it's not"))
+                throw(ArgumentError("Production $p marked as context free while it's not"))
             end
             left = left[1]
         end
@@ -71,22 +71,22 @@ end
 A predicate (that is a one-argument function that retuns `true` or `false`) that is `true` weather the production
 given as argument satisfies all the predicates given by the named arguments.
 """
-function suchthat(;left::Union{AbstractString,Nothing} = nothing, right::Union{AbstractString,Nothing} = nothing, rightlen::Union{Int,Nothing} = nothing, right_is_suffix_of::Union{Iterable,Nothing} = nothing)
+function suchthat(;left::Union{AbstractString,Nothing}=nothing, right::Union{AbstractString,Nothing}=nothing, rightlen::Union{Int,Nothing}=nothing, right_is_suffix_of::Union{Iterable,Nothing}=nothing)
     c = []
     if left ≠ nothing
-        push!(c, p::AbstractProduction->p.left == left)
+        push!(c, p::AbstractProduction -> p.left == left)
     end
     if right ≠ nothing 
-        push!(c, p::AbstractProduction->p.right == [right])
+        push!(c, p::AbstractProduction -> p.right == [right])
     end
     if rightlen ≠ nothing
-        push!(c, p::AbstractProduction->length(p.right) == rightlen)
+        push!(c, p::AbstractProduction -> length(p.right) == rightlen)
     end
     if right_is_suffix_of ≠ nothing 
         d = collect(right_is_suffix_of)
-        push!(c, p::AbstractProduction->d[(end - (length(p.right) - 1)):end] == collect(p.right))
+        push!(c, p::AbstractProduction -> d[(end - (length(p.right) - 1)):end] == collect(p.right))
     end
-    return p::AbstractProduction->all(cond(p) for cond ∈ c)
+    return p::AbstractProduction -> all(cond(p) for cond ∈ c)
 end
 
 """
@@ -105,7 +105,7 @@ Base.hash(x::Production) = Base.hash((x.left, x.right))
 
 Base.show(io::IO, x::Production) = Base.print(io, x)
 
-Base.print(io::IO, x::Production) = Base.print(io, "$(stringifytuple(x.left))->$(stringifytuple(x.right))")
+Base.print(io::IO, x::Production) = Base.print(io, "$(stringifytuple(x.left)) -> $(stringifytuple(x.right))")
 
 Base.iterate(x::Production, i...) = Base.iterate((x.left, x.right), i...)
 

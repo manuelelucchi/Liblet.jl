@@ -24,9 +24,9 @@ end
 Builds a [`Grammar`](@ref) obtained from the given string of productions.
 """
 function Grammar(N, T, P, S) 
-    cf = all(x->isa(x.left, AbstractString), P)
+    cf = all(x -> isa(x.left, AbstractString), P)
     if (N ∩ T) ≠ Set()
-        throw(ArgumentError("The set of terminals and nonterminals are not disjoint, but have " * string(collect(N ∩ T)) * " in common"))
+        throw(ArgumentError("The set of terminals and nonterminals are not disjoint, but have $(collect(N ∩ T)) in common"))
     end
     if S ∉ N
         throw(ArgumentError("The start symbol is not a nonterminal."))
@@ -34,12 +34,12 @@ function Grammar(N, T, P, S)
     if cf
         badprods = [p for p ∈ P if p.left ∉ N]
         if !isempty(badprods)
-            throw(ArgumentError("The following productions have a left-hand side that is not a nonterminal: " * string(badprods)))
+            throw(ArgumentError("The following productions have a left-hand side that is not a nonterminal: $badprods"))
         end
     end
     badprods = [p for p ∈ P if (Set(astype0(p).left) ∪ Set(p.right)) ⊈ (N ∪ T ∪ Set(["ε"]))] 
     if ~isempty(badprods)
-        throw(ArgumentError("The following productions contain symbols that are neither terminals or nonterminals: " * string(badprods)))
+        throw(ArgumentError("The following productions contain symbols that are neither terminals or nonterminals: $badprods"))
     end
     Grammar(N, T, P, S, cf)
 end
@@ -48,19 +48,19 @@ end
     Grammar(prods::AbstractString, iscontextfree = true)::Grammar
 Builds a [`Grammar`](@ref) obtained from the given string of productions.
 """
-function Grammar(prods::AbstractString, iscontextfree = true)::Grammar
+function Grammar(prods::AbstractString, iscontextfree=true)::Grammar
     P = parseproduction(prods, iscontextfree)
     S = nothing
     N = nothing
     T = nothing
     if iscontextfree
         S = P[1].left
-        N = Set(map(x->x.left, P))
-        T = Set(vcat(map(x->x.right, P)...)) - N - "ε"
+        N = Set(map(x -> x.left, P))
+        T = Set(vcat(map(x -> x.right, P)...)) - N - "ε"
     else
         S = P[1].left[1]
-        symbols = Set(vcat(map(x->x.left, P)...)) ∪ Set(vcat(map(x->x.right, P)...))
-        N = Set(filter(x->isuppercase(x[1]), symbols))
+        symbols = Set(vcat(map(x -> x.left, P)...)) ∪ Set(vcat(map(x -> x.right, P)...))
+        N = Set(filter(x -> isuppercase(x[1]), symbols))
         T = symbols - N - "ε"
     end
     G = Grammar(N, T, P, S)

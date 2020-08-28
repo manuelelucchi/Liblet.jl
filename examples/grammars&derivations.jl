@@ -13,7 +13,7 @@ for p ∈ G.P println(p) end
 
 d = Derivation(G)
 
-println("\nSentential Form: " * string(d))
+println("\nSentential Form: $d")
 
 d = d |> 
     (x -> next(x, 2, 1)) |> 
@@ -25,4 +25,4 @@ d = d |>
     (x -> next(x, 6, 3)) |>
     (x -> next(x, 7, 5))
 
-println("\nSentential Form after 8 steps: " * string(d))
+println("\nSentential Form after 8 steps: $d")
